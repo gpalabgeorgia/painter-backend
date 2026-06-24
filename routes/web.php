@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Front\HomeController;
+use App\Http\Controllers\SearchController;
 
 /*
 |--------------------------------------------------------------------------
@@ -11,6 +12,8 @@ use App\Http\Controllers\Front\HomeController;
 */
 // Главная страница сайта
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 Route::get('/password-reset/{token}', function ($token) {
     // Сюда пользователь попадет, если кликнет по ссылке из письма.
