@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use App\Models\NavigationItem;
+use App\Models\HeaderContact;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,11 +31,18 @@ class AppServiceProvider extends ServiceProvider
 
         // Передаем пункты меню во вьюху хедера при каждом её рендере
         View::composer('partials.header', function ($view) {
+            // Загружаем пункты меню
             $menuItems = NavigationItem::where('is_active', true)
                 ->orderBy('sort', 'asc')
                 ->get();
 
-            $view->with('menuItems', $menuItems);
+            // Загружаем активные контакты и соцсети
+            $headerContacts = HeaderContact::where('is_active', true)->get();
+
+            $view->with([
+                'menuItems' => $menuItems,
+                'headerContacts' => $headerContacts,
+            ]);
         });
     }
 }

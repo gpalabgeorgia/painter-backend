@@ -1,10 +1,54 @@
+@php
+    // Массив только для иконок соцсетей
+    $socialIcons = [
+        'instagram' => 'fa-brands fa-instagram',
+        'facebook'  => 'fa-brands fa-facebook-f',
+        'twitter'   => 'fa-brands fa-x-twitter',
+        'telegram'  => 'fa-brands fa-telegram',
+        'youtube'   => 'fa-brands fa-youtube',
+        'tiktok'    => 'fa-brands fa-tiktok',
+        'pinterest' => 'fa-brands fa-pinterest',
+        'whatsapp'  => 'fa-brands fa-whatsapp',
+        'linkedin'  => 'fa-brands fa-linkedin',
+    ];
+@endphp
+
 <header class="site-header">
     <div class="container">
         <div class="header-top">
-            <div class="header-socials">
-                <a href="#" class="social-link"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="social-link"><i class="fa-brands fa-facebook-f"></i></a>
-                <a href="#" class="social-link"><i class="fa-brands fa-twitter"></i></a>
+
+            <div class="header-contacts-block" style="display: flex; flex-direction: column; gap: 8px;">
+
+                <div class="header-socials" style="display: flex; gap: 15px; align-items: center;">
+                    @foreach($headerContacts as $contact)
+                        @if(array_key_exists($contact->type, $socialIcons))
+                            <a href="{{ $contact->value }}" class="social-link" target="_blank" title="{{ $contact->label ?? $contact->type }}">
+                                <i class="{{ $socialIcons[$contact->type] }}"></i>
+                            </a>
+                        @endif
+                    @endforeach
+                </div>
+
+                @foreach($headerContacts as $contact)
+                    @if($contact->type === 'phone')
+                        <div class="header-phone-row">
+                            <a href="tel:{{ $contact->value }}" style="font-size: 13px; text-decoration: none; color: #555; display: flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-phone" style="font-size: 11px;"></i> {{ $contact->value }}
+                            </a>
+                        </div>
+                    @endif
+                @endforeach
+
+                @foreach($headerContacts as $contact)
+                    @if($contact->type === 'email')
+                        <div class="header-email-row">
+                            <a href="mailto:{{ $contact->value }}" style="font-size: 13px; text-decoration: none; color: #555; display: flex; align-items: center; gap: 5px;">
+                                <i class="fa-solid fa-envelope" style="font-size: 11px;"></i> {{ $contact->value }}
+                            </a>
+                        </div>
+                    @endif
+                @endforeach
+
             </div>
 
             <div class="header-logo">
