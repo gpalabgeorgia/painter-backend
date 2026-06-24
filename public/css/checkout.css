@@ -1,0 +1,175 @@
+/* Секция тоже наследует этот цвет хедера за пределами контента */
+.checkout-page-section {
+    background-color: #edf2f3;
+    padding: 60px 20px;
+}
+/* ЦЕНТРАЛЬНЫЙ БЛОК: Белая плита контента, как на исходном макете */
+.checkout-container {
+    max-width: 1100px;
+    margin: 0 auto;
+    background: #ffffff;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+    box-sizing: border-box;
+}
+/* Верхний баннер купона */
+.checkout-coupon-banner {
+    background-color: #fdfdfd;
+    border-top: 3px solid #1a1a1a;
+    padding: 15px 20px;
+    margin-bottom: 40px;
+    font-size: 14px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-left: 1px solid #e0e0e0;
+    border-right: 1px solid #e0e0e0;
+    border-bottom: 1px solid #e0e0e0;
+}
+.checkout-coupon-banner a {
+    color: #1a1a1a;
+    text-decoration: none;
+    font-weight: bold;
+    transition: opacity 0.2s;
+}
+.checkout-coupon-banner a:hover {
+    opacity: 0.7;
+}
+/* Сетка формы и обзора заказа */
+.checkout-grid {
+    display: grid;
+    grid-template-columns: 7fr 5fr;
+    gap: 50px;
+    align-items: start;
+}
+/* Стили полей ввода */
+.billing-details h3, .additional-info h3, .order-review-box h3 {
+    font-size: 19px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 25px;
+    color: #1a1a1a;
+}
+.form-row-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+.form-group {
+    margin-bottom: 22px;
+}
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+}
+.required-star {
+    color: #cc0000;
+    margin-left: 3px;
+}
+.checkout-input, .checkout-select, .checkout-textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    font-size: 14px;
+    color: #333;
+    box-sizing: border-box;
+    background-color: #fff;
+}
+.checkout-input::placeholder, .checkout-textarea::placeholder {
+    color: #aaa;
+}
+.checkout-input:focus, .checkout-select:focus, .checkout-textarea:focus {
+    outline: none;
+    border-color: #1a1a1a;
+}
+.checkout-textarea {
+    resize: vertical;
+    height: 110px;
+}
+.additional-info {
+    margin-top: 40px;
+}
+/* Правый блок заказа */
+.order-review-box {
+    border: 1px solid #e0e0e0;
+    background: #ffffff;
+    padding: 35px;
+}
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+.order-table th {
+    text-align: left;
+    font-weight: bold;
+    font-size: 14px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #1a1a1a;
+}
+.order-table th.text-right, .order-table td.text-right {
+    text-align: right;
+}
+.order-table td {
+    padding: 16px 0;
+    font-size: 14px;
+    border-bottom: 1px solid #e0e0e0;
+    color: #555;
+}
+.product-item-row td {
+    color: #666;
+}
+.total-row-bold {
+    font-weight: bold;
+    color: #1a1a1a !important;
+}
+/* Серое уведомление внутри блока заказа */
+.payment-methods-notice {
+    background-color: #f7f9fa;
+    border: 1px solid #e0e0e0;
+    padding: 25px 20px;
+    margin-top: 25px;
+    margin-bottom: 30px;
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+.payment-methods-notice svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+/* Кнопка */
+.btn-place-order {
+    display: block;
+    width: 100%;
+    background: #1a1a1a;
+    color: #fff;
+    text-align: center;
+    border: none;
+    padding: 16px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+.btn-place-order:hover {
+    opacity: 0.9;
+}
+@media (max-width: 768px) {
+    .checkout-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .checkout-container {
+        padding: 20px;
+    }
+}
