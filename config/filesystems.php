@@ -55,6 +55,14 @@ return [
             'visibility' => 'public',
         ],
 
+        // ДОБАВЛЯЕМ ЭТОТ ДИСК СЮДА:
+        'root' => [
+            'driver' => 'local',
+            'root' => base_path(), // Смотрит в корень всего проекта
+            'url' => env('APP_URL'),
+            'visibility' => 'public',
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

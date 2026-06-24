@@ -1,33 +1,6 @@
 @extends('layouts.app')
 @section('content')
-    <section class="hero-section">
-        <div class="container hero-container">
-            <div class="hero-col hero-left">
-                <h1 class="hero-title">Zaza<br>Papidze</h1>
-                <p class="hero-subtitle">Abstract painter.<br>Art educator.</p>
-            </div>
-            <div class="hero-col hero-center">
-                <div class="painting-block">
-
-                    <div class="painting-frame">
-                        <img src="img/painter-artist-portfolio-hero-img.jpg" alt="Abstract Painting by John Alwin">
-                    </div>
-
-                    <a href="#" class="explore-more">
-                        EXPLORE MORE
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    </a>
-
-                </div>
-            </div>
-            <div class="hero-col hero-right">
-                <div class="hero-divider"></div>
-                <p class="hero-text">
-                    Vitae feugiat proin ut ante rhoncus tortor varius faucibus suspendisse eget ipsum aenean non sapien nullam
-                </p>
-            </div>
-        </div>
-    </section>
+    @include('sections.hero')
     <section id="next-section" class="energy-section">
         <div class="container energy-container">
             <div class="section-divider"></div>
