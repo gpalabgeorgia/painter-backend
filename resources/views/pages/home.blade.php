@@ -3,22 +3,9 @@
     @include('sections.hero')
 
     @include('sections.energy')
-    <section class="video-section">
-        <div class="container video-container">
-            <div class="video-wrapper" id="customVideoPlayer">
-                <video id="mainVideo" poster="img/painter-artist-portfolio-home-about-painter-img.jpg" width="100%">
-                    <source src="videos/video_1781200790.mp4" type="video/mp4">
-                    Your browser not approve video
-                </video>
-                <button class="play-btn" id="videoPlayBtn" aria-label="Play video">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M8 5v14l11-7z"/>
-                    </svg>
-                </button>
-            </div>
-            <h2 class="video-caption">Awards</h2>
-        </div>
-    </section>
+
+    @include('sections.video')
+
     <section class="exhibitions-section">
         <div class="container exhibitions-container">
             <div class="exhibitions-header">
