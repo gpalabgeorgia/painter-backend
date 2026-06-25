@@ -1,50 +1,8 @@
 @extends('layouts.app')
 @section('content')
     @include('sections.hero')
-    <section id="next-section" class="energy-section">
-        <div class="container energy-container">
-            <div class="section-divider"></div>
-            <div class="energy-content">
-                <h2 class="energy-title">
-                    The energy I put into aliquet cursus er integer urna, vestibulum cras bibendum diam sem eros amet malesuada.
-                </h2>
 
-                <div class="energy-text-wrap">
-                    <p>Imperdiet quis sollicitudin vulputate velit id eget donec sed adipiscing turpis tristique aenean nulla dolor eu in habitasse vestibulum, blandit sem sed tempus.</p>
-                    <p>Malesuada id lorem non magna tortor duis sit blandit pulvinar enim turpis dui purus augue nec, eget sit sapien aliquam iaculis at erat sit porttitor massa tristique feugiat aliquam pellentesque vulputate tincidunt augue at duis mauris dictum urna amet ut quisque.</p>
-
-                    <a href="#" class="read-more-btn">READ MORE &rarr;</a>
-                </div>
-            </div>
-
-            <div class="energy-stats">
-                <div class="stat-item">
-                    <div class="stat-icon instagram"><i class="fab fa-instagram"></i></div>
-                    <div class="stat-info">
-                        <h3>1.8M+</h3>
-                        <p>FOLLOWERS</p>
-                    </div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-icon tumblr"><i class="fab fa-tumblr-square"></i></div>
-                    <div class="stat-info">
-                        <h3>800K+</h3>
-                        <p>READERS</p>
-                    </div>
-                </div>
-
-                <div class="stat-item">
-                    <div class="stat-icon facebook"><i class="fab fa-facebook-square"></i></div>
-                    <div class="stat-info">
-                        <h3>1.2M+</h3>
-                        <p>LIKES</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    </section>
+    @include('sections.energy')
     <section class="video-section">
         <div class="container video-container">
             <div class="video-wrapper" id="customVideoPlayer">

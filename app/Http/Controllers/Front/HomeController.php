@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Front;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\HeroSection;
+use App\Models\EnergySection;
 
 class HomeController extends Controller
 {
@@ -12,8 +13,9 @@ class HomeController extends Controller
     {
         // Вытаскиваем настройки Hero-секции из базы данных
         $hero = HeroSection::first();
+        $energy = EnergySection::first();
 
         // Отдает файл resources/views/pages/home.blade.php и прокидывает туда данные секции
-        return view('pages.home', compact('hero'));
+        return view('pages.home', compact('hero', 'energy'));
     }
 }
