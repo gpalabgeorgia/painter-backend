@@ -6,49 +6,8 @@
 
     @include('sections.video')
 
-    <section class="exhibitions-section">
-        <div class="container exhibitions-container">
-            <div class="exhibitions-header">
-                <h2 class="exhibitions-main-title">Upcoming exhibitions</h2>
-                <p class="exhibitions-subtitle">Tempor ac tincidunt feugiat dignissim quis sed donec cursus ornare varius sed sagittis nibh.</p>
-            </div>
-            <div class="exhibitions-grid">
-                <div class="exhibit-card">
-                    <div class="card-image">
-                        <img src="img/painter-artist-portfolio-exhibition-img-1.jpg" alt="Risus diam lacus">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-date">Jun 12 - Jul 16</span>
-                        <h3 class="card-title">Risus diam lacus</h3>
-                        <p class="card-text">Semper convallis urna amet, tortor commodo vitae tempor leo, aliquet nibh ipsum sed posuere.</p>
-                        <a href="#" class="card-link">READ MORE &rarr;</a>
-                    </div>
-                </div>
-                <div class="exhibit-card">
-                    <div class="card-image">
-                        <img src="img/exhibition-img-2.jpg" alt="Tortor ut dignissim">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-date">Jul 28 - Aug 20</span>
-                        <h3 class="card-title">Tortor ut dignissim</h3>
-                        <p class="card-text">Aliquam egestas facilisi nunc nibh cras eget sed mus nibh iaculis scelerisque morbi imperdiet.</p>
-                        <a href="#" class="card-link">READ MORE &rarr;</a>
-                    </div>
-                </div>
-                <div class="exhibit-card">
-                    <div class="card-image">
-                        <img src="img/exhibition-img-3.jpg" alt="Ultrices pulvinar">
-                    </div>
-                    <div class="card-content">
-                        <span class="card-date">Sep 16 - Oct 8</span>
-                        <h3 class="card-title">Ultrices pulvinar</h3>
-                        <p class="card-text">Turpis pharetra velit tortor vitae sit ipsum aliquam tortor sem et ac faucibus mattis ac.</p>
-                        <a href="#" class="card-link">READ MORE &rarr;</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    @include('sections.exhibitions')
+
     <section class="testimonial-section">
         <div class="container testimonial-container">
             <div class="testimonial-quote-icon">
