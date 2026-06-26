@@ -52,9 +52,11 @@
             </div>
 
             <div class="header-logo">
-                <a href="/">
-                    <img src="{{ asset('img/site-logo.svg') }}" alt="John Alwin Logo">
-                </a>
+                @if($logos && !empty($logos->header_logo))
+                    <img src="{{ Storage::url($logos->header_logo) }}" alt="Zaza Papidze">
+                @else
+                    <h2>Zaza Papidze</h2>
+                @endif
             </div>
 
             <div class="header-actions" style="display: flex; align-items: center; gap: 15px; position: relative;">

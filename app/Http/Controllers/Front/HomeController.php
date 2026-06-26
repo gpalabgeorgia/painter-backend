@@ -13,6 +13,9 @@ use App\Models\ExhibitionHeader;
 use App\Models\TestimonialSection;
 use App\Models\PromoSection;
 use App\Models\Artwork;
+use App\Models\NavigationItem;
+use App\Models\HeaderContact;
+use App\Models\LogoSetting;
 
 class HomeController extends Controller
 {
@@ -34,7 +37,13 @@ class HomeController extends Controller
         $artworkHeader = ArtworkHeader::first();
         $subscribeSection = \App\Models\SubscribeSection::first();
 
+        // 2. Внутри метода index() делаем выборку:
+        $footerMenus = NavigationItem::all();
+        $contactData = HeaderContact::first();
+        $logos = LogoSetting::first();
+
+
         // Отдает файл resources/views/pages/home.blade.php и прокидывает туда данные секции
-        return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader', 'testimonial', 'promo', 'artworks', 'artworkHeader', 'subscribeSection'));
+        return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader', 'testimonial', 'promo', 'artworks', 'artworkHeader', 'subscribeSection', 'footerMenus', 'contactData', 'logos'));
     }
 }
