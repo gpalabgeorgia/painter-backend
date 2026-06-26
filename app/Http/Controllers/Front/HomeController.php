@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Front;
 
 use App\Http\Controllers\Controller;
+use App\Models\ArtworkHeader;
 use Illuminate\Http\Request;
 use App\Models\HeroSection;
 use App\Models\EnergySection;
@@ -10,6 +11,8 @@ use App\Models\VideoSection;
 use App\Models\Exhibition;
 use App\Models\ExhibitionHeader;
 use App\Models\TestimonialSection;
+use App\Models\PromoSection;
+use App\Models\Artwork;
 
 class HomeController extends Controller
 {
@@ -26,8 +29,11 @@ class HomeController extends Controller
             ->get();
         $exhibitionHeader = ExhibitionHeader::first();
         $testimonial = TestimonialSection::first();
+        $promo = PromoSection::first();
+        $artworks = Artwork::latest()->take(4)->get();
+        $artworkHeader = ArtworkHeader::first();
 
         // Отдает файл resources/views/pages/home.blade.php и прокидывает туда данные секции
-        return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader', 'testimonial'));
+        return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader', 'testimonial', 'promo', 'artworks', 'artworkHeader'));
     }
 }

@@ -58,7 +58,7 @@ return [
         // ДОБАВЛЯЕМ ЭТОТ ДИСК СЮДА:
         'root' => [
             'driver' => 'local',
-            'root' => base_path(), // Смотрит в корень всего проекта
+            'root' => public_path(), // Смотрит в корень всего проекта
             'url' => env('APP_URL'),
             'visibility' => 'public',
         ],

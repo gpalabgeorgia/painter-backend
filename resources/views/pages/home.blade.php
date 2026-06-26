@@ -10,84 +10,10 @@
 
     @include('sections.testiomorial')
 
-    <section class="learn-section">
-        <div class="container">
-            <div class="learn-card-box">
+    @include('sections.promo')
 
-                <img src="img/gradient-line-bg-3.svg" alt="Background shape" class="learn-blob">
+    @include('sections.artworks')
 
-                <div class="learn-image-wrapper">
-                    <img src="img/learn-painting-cta.png" alt="Painter with brush">
-                </div>
-
-                <div class="learn-text-content">
-                    <h2 class="learn-title">Learn Painting</h2>
-                    <p class="learn-descr">Diam praesent ullamcorper cursus integer ullamcorper ac lorem scelerisque faucibus dignissim eget sapien.</p>
-                    <a href="#" class="learn-btn">START NOW</a>
-                </div>
-
-            </div>
-        </div>
-    </section>
-    <section class="artwork-section">
-        <div class="artwork-container">
-            <div class="artwork-header">
-                <div class="artwork-header-left">
-                    <h2>Latest artwork</h2>
-                    <p>Tempor ac tincidunt feugiat dignissim quis sed donec cursus ornare varius sed sagittis nibh.</p>
-                </div>
-                <div class="artwork-header-right">
-                    <a href="#" class="view-all-btn">VIEW ALL <span>&rarr;</span></a>
-                </div>
-            </div>
-            <div class="artwork-grid">
-                <div class="artwork-card">
-                    <div class="artwork-img-box">
-                        <img src="img/product-img-8-300x400.jpg" alt="Starry Night">
-                    </div>
-                    <div class="artwork-info">
-                        <span class="artwork-category">Sticks</span>
-                        <h3 class="artwork-title">Starry Night</h3>
-                        <span class="artwork-price">$640.00</span>
-                        <a href="#" class="add-to-cart-btn">ADD TO CART</a>
-                    </div>
-                </div>
-                <div class="artwork-card">
-                    <div class="artwork-img-box">
-                        <img src="img/product-img-4-300x400.jpg" alt="Majesty">
-                    </div>
-                    <div class="artwork-info">
-                        <span class="artwork-category">Sticks</span>
-                        <h3 class="artwork-title">Majesty</h3>
-                        <span class="artwork-price">$400.00</span>
-                        <a href="#" class="add-to-cart-btn">ADD TO CART</a>
-                    </div>
-                </div>
-                <div class="artwork-card">
-                    <div class="artwork-img-box">
-                        <img src="img/product-img-7-300x400.jpg" alt="Analogue">
-                    </div>
-                    <div class="artwork-info">
-                        <span class="artwork-category">Abstract</span>
-                        <h3 class="artwork-title">Analogue</h3>
-                        <span class="artwork-price">$800.00</span>
-                        <a href="#" class="add-to-cart-btn">ADD TO CART</a>
-                    </div>
-                </div>
-                <div class="artwork-card">
-                    <div class="artwork-img-box">
-                        <img src="img/product-img-2-300x400.jpg" alt="Meena Harbor">
-                    </div>
-                    <div class="artwork-info">
-                        <span class="artwork-category">Abstract</span>
-                        <h3 class="artwork-title">Meena Harbor</h3>
-                        <span class="artwork-price">$640.00</span>
-                        <a href="#" class="add-to-cart-btn">ADD TO CART</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
     <section class="subscribe-section">
         <img src="img/gradient-line-bg-2.svg" alt="" class="subscribe-blob">
 
