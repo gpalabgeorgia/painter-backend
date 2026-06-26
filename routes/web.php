@@ -5,6 +5,7 @@ use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\SearchController;
 use App\Models\ExhibitionHeader;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Front\SubscribeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,3 +37,5 @@ Route::post('/admin/exhibitions/save-headers', function (Request $request) {
         ],
     ]);
 })->name('filament.exhibitions.save-headers')->middleware(['web', 'auth']);
+
+Route::post('/subscribe', [SubscribeController::class, 'store'])->name('subscribe.store');
