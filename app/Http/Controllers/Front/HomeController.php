@@ -9,6 +9,7 @@ use App\Models\EnergySection;
 use App\Models\VideoSection;
 use App\Models\Exhibition;
 use App\Models\ExhibitionHeader;
+use App\Models\TestimonialSection;
 
 class HomeController extends Controller
 {
@@ -24,8 +25,9 @@ class HomeController extends Controller
             ->take(3)
             ->get();
         $exhibitionHeader = ExhibitionHeader::first();
+        $testimonial = TestimonialSection::first();
 
         // Отдает файл resources/views/pages/home.blade.php и прокидывает туда данные секции
-        return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader'));
+        return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader', 'testimonial'));
     }
 }

@@ -630,9 +630,14 @@ body {
    ========================================================================== */
 .testimonial-section {
     background-color: #ecf3f4;
-    padding: 320px 0 120px 0;
+    /* Увеличили верх до 220px, чтобы кавычки ушли ниже белых карточек */
+    padding: 220px 0 120px 0;
     text-align: center;
+
+    /* Дополнительно раздвигаем границы между секциями */
+    margin-top: 120px;
 }
+
 .testimonial-container {
     max-width: 960px;
     margin: 0 auto;

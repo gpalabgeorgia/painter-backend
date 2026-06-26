@@ -8,22 +8,8 @@
 
     @include('sections.exhibitions')
 
-    <section class="testimonial-section">
-        <div class="container testimonial-container">
-            <div class="testimonial-quote-icon">
-                <svg width="48" height="34" viewBox="0 0 48 34" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M0 19.3103C0 8.58621 8.27586 0 18.2069 0V7.03448C13.2414 7.03448 9.93103 10.7586 9.93103 15.1724H18.2069V33.1034H0V19.3103ZM29.7931 19.3103C29.7931 8.58621 38.069 0 48 0V7.03448C43.0345 7.03448 39.7241 10.7586 39.7241 15.1724H48V33.1034H29.7931V19.3103Z" fill="#2fdad7"/>
-                </svg>
-            </div>
-            <blockquote class="testimonial-text">
-                Really beautiful professional abstracts led quis malesuada aenean risus, gravida eu nunc quis bibendum venenatis.
-            </blockquote>
-            <div class="testimonial-author">
-                <span class="author-name">Jonathan Doe</span>
-                <span class="author-role">ABC Architect</span>
-            </div>
-        </div>
-    </section>
+    @include('sections.testiomorial')
+
     <section class="learn-section">
         <div class="container">
             <div class="learn-card-box">
