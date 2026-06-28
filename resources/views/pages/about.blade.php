@@ -2,7 +2,7 @@
 @section('content')
     <!-- СЕКЦИЯ ABOUT HERO (ДИНАМИЧЕСКАЯ) -->
     @if($aboutData)
-        <section class="about-hero-section">
+        <section class="about-hero-section" style="padding-bottom: 100px;">
             <div class="about-hero-container">
                 <!-- Верхняя декоративная черточка -->
                 <div class="about-top-line"></div>
@@ -40,12 +40,16 @@
     @endif
 
     <!-- СЕКЦИЯ С ЦИТАТОЙ (ПОКА СТАТИКА) -->
-    <section class="artist-quote-section">
+    <section class="artist-quote-section" style="padding-top: 0;">
         <div class="artist-quote-container">
             <div class="artist-image-wrapper">
                 <img src="{{ asset('img/gradient-line-bg-3.svg') }}" alt="" class="quote-blob">
                 <div class="artist-photo-box">
-                    <img src="{{ asset('img/about-painter-img2.jpg') }}" alt="John Alwin">
+                    @if(!empty($aboutData->s2_image))
+                        <img src="{{ Storage::url($aboutData->s2_image) }}" alt="{{ $aboutData->s2_name ?? 'Artist' }}">
+                    @else
+                        <img src="{{ asset('img/about-painter-img2.jpg') }}" alt="John Alwin">
+                    @endif
                 </div>
             </div>
             <div class="artist-info-wrapper">
@@ -58,12 +62,17 @@
                     </svg>
                 </div>
                 <blockquote class="artist-blockquote">
-                    The energy I put into aliquet cursus er integer urna, vestibulum cras bibendum diam sem eros amet malesuada.
+                    {{ $aboutData->s2_quote ?? 'The energy I put into aliquet cursus er integer urna, vestibulum cras bibendum diam sem eros amet malesuada.' }}
                 </blockquote>
+
                 <div class="artist-signature-box">
-                    <img src="{{ asset('img/signature.svg') }}" alt="Zaza Papidze Signature" class="artist-signature">
+                    @if(!empty($aboutData->s2_signature))
+                        <img src="{{ Storage::url($aboutData->s2_signature) }}" alt="Signature" class="artist-signature">
+                    @else
+                        <img src="{{ asset('img/signature.svg') }}" alt="Zaza Papidze Signature" class="artist-signature">
+                    @endif
                 </div>
-                <span class="artist-name">Zaza Papidze</span>
+                <span class="artist-name">{{ $aboutData->s2_name ?? 'Zaza Papidze' }}</span>
             </div>
         </div>
     </section>
@@ -71,22 +80,40 @@
     <!-- СЕКЦИЯ НАГРАД И СТАТИСТИКИ (ПОКА СТАТИКА) -->
     <section class="awards-section">
         <div class="awards-container">
-            <h2 class="awards-title">Awards</h2>
-            <div class="awards-logos-grid">
-                <div class="awards-logos-row row-top">
-                    <div class="award-logo-item"><img src="{{ asset('img/logos/logo-ipsum-1.svg') }}" alt="Logoipsum"></div>
-                    <div class="award-logo-item"><img src="{{ asset('img/logos/logo-ipsum-2.svg') }}" alt="Ultimate Winner"></div>
-                    <div class="award-logo-item"><img src="{{ asset('img/logos/logo-ipsum-3.svg') }}" alt="Power XR2"></div>
-                    <div class="award-logo-item"><img src="{{ asset('img/logos/logo-ipsum-4.svg') }}" alt="Hyper Best"></div>
+            <h2 class="awards-title">{{ $aboutData->s3_title ?? 'Awards' }}</h2>
+            @if(!empty($aboutData->s3_logos) && is_array($aboutData->s3_logos))
+                @php
+                    $logosCollection = collect($aboutData->s3_logos);
+                    // Берем первые 4 логотипа для верхнего ряда
+                    $topRow = $logosCollection->take(4);
+                    // Все остальные пойдут в нижний ряд
+                    $bottomRow = $logosCollection->skip(4);
+                @endphp
+                <div class="awards-logos-grid">
+                    <div class="awards-logos-row row-top">
+                        @foreach($topRow as $logo)
+                            <div class="award-logo-item">
+                                <img src="{{ Storage::url($logo) }}" alt="Award Logo">
+                            </div>
+                        @endforeach
+                    </div>
+                    @if($bottomRow->count() > 0)
+                        <div class="awards-logos-row row-bottom">
+                            @foreach($bottomRow as $logo)
+                                <div class="award-logo-item">
+                                    <img src="{{ Storage::url($logo) }}" alt="Award Logo">
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
                 </div>
-                <div class="awards-logos-row row-bottom">
-                    <div class="award-logo-item"><img src="{{ asset('img/logos/logo-ipsum-5.svg') }}" alt="International Mega Standard"></div>
-                    <div class="award-logo-item"><img src="{{ asset('img/logos/logo-ipsum-6.svg') }}" alt="Ultra Prestigious"></div>
-                    <div class="award-logo-item"><img src="{{ asset('img/logos/logo-ipsum-7.svg') }}" alt="Logoipsum 2"></div>
-                </div>
-            </div>
+            @endif
             <div class="awards-description-box">
-                <p>Mi gravida faucibus orci facilisis at amet, enim, aliquet pulvinar tempor et pretium a adipiscing ut lacinia dignissim et morbi semper sed suspendisse erat risus ligula duis pretium laoreet turpis in pharetra, sit fermentum mauris ac maecenas viverra netus ornare bibendum tristique dignissim lorem tincidunt vitae amet neque.</p>
+                @if(!empty($aboutData->s3_text))
+                    {!! $aboutData->s3_text !!}
+                @else
+                    <p>Mi gravida faucibus orci facilisis at amet, enim, aliquet pulvinar tempor et pretium a adipiscing ut lacinia dignissim et morbi semper sed suspendisse erat risus ligula duis pretium laoreet turpis in pharetra, sit fermentum mauris ac maecenas viverra netus ornare bibendum tristique dignissim lorem tincidunt vitae amet neque.</p>
+                @endif
             </div>
             <hr class="awards-divider">
             <div class="stats-grid">
@@ -124,4 +151,6 @@
             </div>
         </div>
     </section>
+
+    @include('sections.subscribe')
 @endsection

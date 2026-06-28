@@ -9,7 +9,7 @@ class CreateAboutPage extends CreateRecord
 {
     protected static string $resource = AboutPageResource::class;
 
-    // После создания принудительно редиректим на редактирование ЭТОЙ ЖЕ записи
+    // На всякий случай: если запись создана, сразу кидаем на её редактирование
     protected function getRedirectUrl(): string
     {
         return $this->getResource()::getUrl('edit', ['record' => $this->record->id]);
