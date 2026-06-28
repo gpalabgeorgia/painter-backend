@@ -6,6 +6,7 @@ use App\Http\Controllers\SearchController;
 use App\Models\ExhibitionHeader;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Front\SubscribeController;
+use App\Http\Controllers\Front\AboutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,6 +16,9 @@ use App\Http\Controllers\Front\SubscribeController;
 */
 // Главная страница сайта
 Route::get('/', [HomeController::class, 'index'])->name('home');
+
+// Чистый, читаемый роут для страницы About
+Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 Route::get('/search', [SearchController::class, 'index'])->name('search');
 
