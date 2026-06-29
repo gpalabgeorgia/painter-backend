@@ -7,6 +7,7 @@ use App\Models\ExhibitionHeader;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Front\SubscribeController;
 use App\Http\Controllers\Front\AboutController;
+use App\Http\Controllers\Front\ArtworksPageController;
 
 /*
 |--------------------------------------------------------------------------
@@ -43,3 +44,4 @@ Route::post('/admin/exhibitions/save-headers', function (Request $request) {
 })->name('filament.exhibitions.save-headers')->middleware(['web', 'auth']);
 
 Route::post('/subscribe', [SubscribeController::class, 'store'])->name('subscribe.store');
+Route::get('/artworks', [ArtworksPageController::class, 'index'])->name('artworks');

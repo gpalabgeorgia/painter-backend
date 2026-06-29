@@ -2873,4 +2873,48 @@ body {
 .btn-checkout:hover {
     background-color: #f8f9fa;
 }
+/* Ограничиваем размер гигантских иконок-стрелок, если они вылезут */
+.custom-artworks-pagination svg {
+    width: 20px !important;
+    height: 20px !important;
+    display: inline-block;
+}
 
+/* Делаем пагинацию в линейку по центру */
+.custom-artworks-pagination ul {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    justify-content: center;
+    gap: 10px;
+    align-items: center;
+}
+
+.custom-artworks-pagination .page-link {
+    padding: 8px 14px;
+    border: 1px solid #ccc;
+    color: #000;
+    text-decoration: none;
+    background: #fff;
+}
+
+.custom-artworks-pagination .page-item.active .page-link {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+}
+/* Эффект мягкого проявления галереи при загрузке страницы */
+.artworks-gallery-section {
+    animation: fadeInGallery 0.6s ease-in-out forwards;
+}
+
+@keyframes fadeInGallery {
+    from {
+        opacity: 0;
+        transform: translateY(10px); /* Легкое, едва заметное приподнятие */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
