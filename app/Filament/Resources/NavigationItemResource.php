@@ -13,12 +13,10 @@ use Filament\Tables;
 class NavigationItemResource extends Resource
 {
     protected static ?string $model = NavigationItem::class;
-
-    // Иконка в боковом меню админки
     protected static ?string $navigationIcon = 'heroicon-o-menu';
-
-    // Название пункта в меню админки
-    protected static ?string $navigationLabel = 'Меню навигации';
+    protected static ?string $navigationLabel = '3. Меню навигации';
+    protected static ?string $navigationGroup = 'Хедер';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

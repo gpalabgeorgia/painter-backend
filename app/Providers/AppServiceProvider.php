@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
@@ -28,10 +27,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // Включаем человеческую верстку для пагинации
         // Универсальный метод для старых версий Laravel
         \Illuminate\Pagination\Paginator::useBootstrap();
-        Schema::defaultStringLength(191); // <-- 2. ДОБАВИТЬ ЭТУ СТРОКУ
+        Schema::defaultStringLength(191);
 
         // Передаем пункты меню во вьюху хедера при каждом её рендере
         View::composer('partials.header', function ($view) {
@@ -48,5 +46,6 @@ class AppServiceProvider extends ServiceProvider
                 'headerContacts' => $headerContacts,
             ]);
         });
+
     }
 }

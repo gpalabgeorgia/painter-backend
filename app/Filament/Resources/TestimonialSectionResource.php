@@ -13,7 +13,9 @@ class TestimonialSectionResource extends Resource
 {
     protected static ?string $model = TestimonialSection::class;
     protected static ?string $navigationIcon = 'heroicon-o-chat-alt-2';
-    protected static ?string $navigationLabel = 'Секция: Цитата';
+    protected static ?string $navigationLabel = '5. Секция: Цитата';
+    protected static ?string $navigationGroup = 'Главная';
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

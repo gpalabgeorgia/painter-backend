@@ -13,13 +13,10 @@ use Filament\Tables;
 class ArtworkItemResource extends Resource
 {
     protected static ?string $model = ArtworkItem::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-photograph';
-
-// Меню в левой панели админки
-    protected static ?string $navigationLabel = 'Artworks: Карточки картин';
-
-// Заголовок внутри самого раздела
+    protected static ?string $navigationLabel = '2. Карточки картин';
+    protected static ?string $navigationGroup = 'Галерея (Artworks)';
+    protected static ?int $navigationSort = 2;
     protected static ?string $pluralLabel = 'Карточки картин для страницы Artworks';
     protected static ?string $modelLabel = 'картину';
 

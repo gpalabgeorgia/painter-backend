@@ -13,7 +13,9 @@ class PromoSectionResource extends Resource
 {
     protected static ?string $model = PromoSection::class;
     protected static ?string $navigationIcon = 'heroicon-o-academic-cap';
-    protected static ?string $navigationLabel = 'Секция: Промо / Обучение';
+    protected static ?string $navigationLabel = '6. Промо / Обучение';
+    protected static ?string $navigationGroup = 'Главная';
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {

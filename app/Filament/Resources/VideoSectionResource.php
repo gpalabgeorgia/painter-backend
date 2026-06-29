@@ -14,7 +14,9 @@ class VideoSectionResource extends Resource
 {
     protected static ?string $model = VideoSection::class;
     protected static ?string $navigationIcon = 'heroicon-o-video-camera';
-    protected static ?string $navigationLabel = 'Главная: Видео';
+    protected static ?string $navigationLabel = '3. Видео блок';
+    protected static ?string $navigationGroup = 'Главная';
+    protected static ?int $navigationSort = 3;
 
     public static function form(Form $form): Form
     {

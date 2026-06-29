@@ -16,7 +16,9 @@ class HeroSectionResource extends Resource
 {
     protected static ?string $model = HeroSection::class;
     protected static ?string $navigationIcon = 'heroicon-o-template';
-    protected static ?string $navigationLabel = 'Главная: Hero секция';
+    protected static ?string $navigationLabel = '1. Hero секция';
+    protected static ?string $navigationGroup = 'Главная';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

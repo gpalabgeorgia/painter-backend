@@ -13,9 +13,10 @@ use Filament\Tables;
 class SearchSettingResource extends Resource
 {
     protected static ?string $model = SearchSetting::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-cog';
-    protected static ?string $navigationLabel = 'Настройки поиска';
+    protected static ?string $navigationLabel = '1. Настройки поиска';
+    protected static ?string $navigationGroup = 'Настройки сайта';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

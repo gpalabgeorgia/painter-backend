@@ -16,8 +16,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class LogoSettingResource extends Resource
 {
     protected static ?string $model = LogoSetting::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationLabel = '1. Логотип';
+    protected static ?string $navigationGroup = 'Хедер';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {

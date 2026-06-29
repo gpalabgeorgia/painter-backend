@@ -16,8 +16,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class SubscriberResource extends Resource
 {
     protected static ?string $model = Subscriber::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationLabel = '10. Список подписчиков';
+    protected static ?string $navigationGroup = 'Главная';
+    protected static ?int $navigationSort = 10;
 
     public static function form(Form $form): Form
     {

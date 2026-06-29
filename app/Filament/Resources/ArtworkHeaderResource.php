@@ -13,7 +13,9 @@ class ArtworkHeaderResource extends Resource
 {
     protected static ?string $model = ArtworkHeader::class;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Текст: Заголовок витрин';
+    protected static ?string $navigationLabel = '7. Заголовок витрины картин';
+    protected static ?string $navigationGroup = 'Главная';
+    protected static ?int $navigationSort = 7;
 
     public static function form(Form $form): Form
     {

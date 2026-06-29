@@ -14,9 +14,10 @@ use Closure;
 class HeaderContactResource extends Resource
 {
     protected static ?string $model = HeaderContact::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-phone';
-    protected static ?string $navigationLabel = 'Контакты и соц. сети';
+    protected static ?string $navigationLabel = '2. Контакты и соц. сети';
+    protected static ?string $navigationGroup = 'Хедер';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {

@@ -14,7 +14,9 @@ class ArtworkResource extends Resource
 {
     protected static ?string $model = Artwork::class;
     protected static ?string $navigationIcon = 'heroicon-o-collection';
-    protected static ?string $navigationLabel = 'Каталог работ / Картин';
+    protected static ?string $navigationLabel = '8. Каталог работ (Витрина)';
+    protected static ?string $navigationGroup = 'Главная';
+    protected static ?int $navigationSort = 8;
 
     public static function form(Form $form): Form
     {

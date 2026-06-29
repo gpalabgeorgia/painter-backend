@@ -14,7 +14,9 @@ class ArtworksPageResource extends Resource
     protected static ?string $model = ArtworksPage::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
-    protected static ?string $navigationLabel = 'Страница Artworks';
+    protected static ?string $navigationLabel = '1. Настройки страницы';
+    protected static ?string $navigationGroup = 'Галерея (Artworks)';
+    protected static ?int $navigationSort = 1;
 
     // Ссылка из меню сразу ведет на редактирование записи с ID = 1
     public static function getNavigationUrl(): string

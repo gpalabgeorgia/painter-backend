@@ -14,7 +14,9 @@ class EnergySectionResource extends Resource
 {
     protected static ?string $model = EnergySection::class;
     protected static ?string $navigationIcon = 'heroicon-o-lightning-bolt';
-    protected static ?string $navigationLabel = 'Главная: Energy секция';
+    protected static ?string $navigationLabel = '2. Energy секция';
+    protected static ?string $navigationGroup = 'Главная';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
