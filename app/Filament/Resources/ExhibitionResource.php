@@ -14,9 +14,9 @@ class ExhibitionResource extends Resource
 {
     protected static ?string $model = Exhibition::class;
     protected static ?string $navigationIcon = 'heroicon-o-collection';
-    protected static ?string $navigationLabel = '4. Выставки';
-    protected static ?string $navigationGroup = 'Главная';
-    protected static ?int $navigationSort = 4;
+    protected static ?string $navigationLabel = '2. Предстоящие выставки';
+    protected static ?string $navigationGroup = 'ВЫСТАВКИ';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
     {
