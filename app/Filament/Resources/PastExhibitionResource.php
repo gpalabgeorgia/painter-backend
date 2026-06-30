@@ -17,7 +17,6 @@ class PastExhibitionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-collection';
     protected static ?string $navigationGroup = 'ВЫСТАВКИ';
 
-    // Присваиваем номер 3 в меню
     protected static ?string $navigationLabel = '3. Прошедшие выставки';
     protected static ?string $pluralModelLabel = 'Прошедшие выставки';
     protected static ?string $modelLabel = 'выставку';
@@ -38,7 +37,8 @@ class PastExhibitionResource extends Resource
 
                     Forms\Components\FileUpload::make('image')
                         ->label('Фотография картины')
-                        ->directory('past-exhibitions')
+                        ->disk('root') // Используем твой рабочий диск root
+                        ->directory('img/past-exhibitions') // Сохраняем строго внутрь папки public/img/
                         ->image()
                         ->required(),
 
@@ -60,9 +60,9 @@ class PastExhibitionResource extends Resource
     {
         return $table
             ->columns([
-                // Убрал метод square(), во второй версии он не нужен
                 Tables\Columns\ImageColumn::make('image')
-                    ->label('Фото'),
+                    ->label('Фото')
+                    ->disk('root'),
 
                 Tables\Columns\TextColumn::make('title')
                     ->label('Название')

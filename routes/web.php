@@ -1,13 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\SearchController;
 use App\Models\ExhibitionHeader;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Front\SubscribeController;
 use App\Http\Controllers\Front\AboutController;
 use App\Http\Controllers\Front\ArtworksPageController;
+use App\Http\Controllers\Front\ExhibitionController;
+use App\Http\Controllers\Front\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,3 +46,4 @@ Route::post('/admin/exhibitions/save-headers', function (Request $request) {
 
 Route::post('/subscribe', [SubscribeController::class, 'store'])->name('subscribe.store');
 Route::get('/artworks', [ArtworksPageController::class, 'index'])->name('artworks');
+Route::get('/exhibitions', [ExhibitionController::class, 'index']);
