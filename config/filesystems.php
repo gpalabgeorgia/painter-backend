@@ -55,6 +55,14 @@ return [
             'visibility' => 'public',
         ],
 
+        'products_public' => [
+            'driver' => 'local',
+            'root' => public_path('img/products_img'),
+            'url' => env('APP_URL').'/img/products_img',
+            'visibility' => 'public',
+            'throw' => false,
+        ],
+
         // ДОБАВЛЯЕМ ЭТОТ ДИСК СЮДА:
         'root' => [
             'driver' => 'local',

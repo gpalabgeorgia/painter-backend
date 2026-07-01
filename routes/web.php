@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Front\ShopController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchController;
 use App\Models\ExhibitionHeader;
@@ -49,3 +50,4 @@ Route::get('/artworks', [ArtworksPageController::class, 'index'])->name('artwork
 Route::get('/exhibitions', [ExhibitionController::class, 'index']);
 Route::get('/contact', [HomeController::class, 'contacts'])->name('contact');
 Route::post('/contact', [HomeController::class, 'storeContact'])->name('contact.store');
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
