@@ -29,6 +29,11 @@ class HeaderContactResource extends Resource
                         ->options([
                             'phone' => 'Телефон',
                             'email' => 'Эл. почта',
+                            // ДОБАВИЛИ НОВЫЕ ТИПЫ ДЛЯ СТРАНИЦЫ КОНТАКТОВ:
+                            'address' => 'Физический адрес',
+                            'contact_title' => 'Контакты: Заголовок (Get in touch)',
+                            'contact_description' => 'Контакты: Описание под заголовком',
+                            // Соц. сети:
                             'instagram' => 'Instagram',
                             'facebook' => 'Facebook',
                             'twitter' => 'Twitter (X)',
@@ -40,22 +45,28 @@ class HeaderContactResource extends Resource
                             'linkedin' => 'LinkedIn',
                         ])
                         ->required()
-                        ->reactive() // Делает поле реактивным для валидации
+                        ->reactive()
                         ->rules([
                             function (Closure $get, $record) {
                                 return function (string $attribute, $value, Closure $fail) use ($get, $record) {
-                                    // Если выбран тип "Телефон"
                                     if ($value === 'phone') {
                                         $query = HeaderContact::where('type', 'phone');
-
-                                        // Если мы редактируем уже существующий телефон, исключаем его из счета
                                         if ($record) {
                                             $query->where('id', '!=', $record->id);
                                         }
-
-                                        // Если в базе уже есть 2 телефона, выдаем ошибку
                                         if ($query->count() >= 2) {
                                             $fail('Нельзя добавить больше двух номеров телефона.');
+                                        }
+                                    }
+
+                                    // Ограничим заголовки и описания страниц одной записью, чтобы не дублировать
+                                    if (in_array($value, ['address', 'contact_title', 'contact_description'])) {
+                                        $query = HeaderContact::where('type', $value);
+                                        if ($record) {
+                                            $query->where('id', '!=', $record->id);
+                                        }
+                                        if ($query->count() >= 1) {
+                                            $fail('Этот элемент уже добавлен в базу.');
                                         }
                                     }
                                 };
@@ -63,13 +74,18 @@ class HeaderContactResource extends Resource
                         ]),
 
                     Forms\Components\TextInput::make('value')
-                        ->label('Значение / Ссылка')
+                        ->label('Значение / Ссылка / Текст')
                         ->required()
-                        ->placeholder('Например: +7999... или https://instagram.com/...'),
+                        ->placeholder(function (Closure $get) {
+                            $type = $get('type');
+                            if ($type === 'contact_description') return 'Введите текст описания...';
+                            if ($type === 'address') return 'Например: 123 Demo St, New Orleans...';
+                            return 'Например: +7999... или https://instagram.com/...';
+                        }),
 
                     Forms\Components\TextInput::make('label')
                         ->label('Название (необязательно)')
-                        ->placeholder('Например: Основной телефон'),
+                        ->placeholder('Например: Основной адрес или Рабочий email'),
 
                     Forms\Components\Toggle::make('is_active')
                         ->label('Активно')
@@ -87,6 +103,9 @@ class HeaderContactResource extends Resource
                     ->enum([
                         'phone' => 'Телефон',
                         'email' => 'Эл. почта',
+                        'address' => 'Физический адрес',
+                        'contact_title' => 'Контакты: Заголовок',
+                        'contact_description' => 'Контакты: Описание',
                         'instagram' => 'Instagram',
                         'facebook' => 'Facebook',
                         'twitter' => 'Twitter (X)',
@@ -100,7 +119,8 @@ class HeaderContactResource extends Resource
 
                 Tables\Columns\TextColumn::make('value')
                     ->label('Значение')
-                    ->searchable(),
+                    ->searchable()
+                    ->limit(50), // Чтобы длинное описание не разносило таблицу
 
                 Tables\Columns\TextColumn::make('label')
                     ->label('Метка'),

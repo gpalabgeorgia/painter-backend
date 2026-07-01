@@ -47,3 +47,5 @@ Route::post('/admin/exhibitions/save-headers', function (Request $request) {
 Route::post('/subscribe', [SubscribeController::class, 'store'])->name('subscribe.store');
 Route::get('/artworks', [ArtworksPageController::class, 'index'])->name('artworks');
 Route::get('/exhibitions', [ExhibitionController::class, 'index']);
+Route::get('/contact', [HomeController::class, 'contacts'])->name('contact');
+Route::post('/contact', [HomeController::class, 'storeContact'])->name('contact.store');

@@ -16,16 +16,16 @@ use App\Models\Artwork;
 use App\Models\NavigationItem;
 use App\Models\HeaderContact;
 use App\Models\LogoSetting;
+use App\Models\ContactMessage;
 
 class HomeController extends Controller
 {
     public function index()
     {
-        // Вытаскиваем настройки Hero-секции из базы данных
+        // Твой родной рабочий код для главной страницы
         $hero = HeroSection::first();
         $energy = EnergySection::first();
         $videoData = VideoSection::where('is_active', true)->first();
-        // Берем активные выставки, максимум 3 штуки, свежие — первыми
         $exhibitions = Exhibition::where('is_active', true)
             ->orderBy('created_at', 'desc')
             ->take(3)
@@ -37,13 +37,47 @@ class HomeController extends Controller
         $artworkHeader = ArtworkHeader::first();
         $subscribeSection = \App\Models\SubscribeSection::first();
 
-        // 2. Внутри метода index() делаем выборку:
         $footerMenus = NavigationItem::all();
+        // Для главной оставляем как было, чтобы ничего не поломать в хедере
         $contactData = HeaderContact::first();
         $logos = LogoSetting::first();
 
-
-        // Отдает файл resources/views/pages/home.blade.php и прокидывает туда данные секции
         return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader', 'testimonial', 'promo', 'artworks', 'artworkHeader', 'subscribeSection', 'footerMenus', 'contactData', 'logos'));
+    }
+
+    /**
+     * МЕТОД ДЛЯ СТРАНИЦЫ КОНТАКТОВ
+     */
+    public function contacts()
+    {
+        // Забираем вообще ВСЕ активные контакты и превращаем в удобную коллекцию с ключами по типу
+        $contacts = HeaderContact::where('is_active', true)->get()->keyBy('type');
+
+        // Нужные для хедера/футера штуки тоже вытащим, если они там используются
+        $footerMenus = NavigationItem::all();
+        $logos = LogoSetting::first();
+
+        // Отдаем будущую страницу контактов
+        return view('pages.contact', compact('contacts', 'footerMenus', 'logos'));
+    }
+
+    /**
+     * МЕТОД ДЛЯ СОХРАНЕНИЯ СООБЩЕНИЙ С ФОРМЫ
+     */
+    public function storeContact(Request $request)
+    {
+        // Валидируем входящие поля
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'subject' => 'nullable|string|max:255',
+            'message' => 'nullable|string',
+        ]);
+
+        // Теперь красиво вызываем черезuse
+        ContactMessage::create($validated);
+
+        // Возвращаем назад с сообщением об успехе
+        return back()->with('success', 'Thank you! Your message has been sent successfully.');
     }
 }
