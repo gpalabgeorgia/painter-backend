@@ -1,7 +1,5 @@
-@if($artworks && $artworks->count() > 0)
     <section class="artwork-section">
         <div class="artwork-container">
-
             {{-- Динамическая шапка секции с заголовком и подзаголовком из админки --}}
             <div class="artwork-header">
                 <div class="artwork-header-left">
@@ -12,35 +10,28 @@
                     <a href="#" class="view-all-btn">VIEW ALL <span>&rarr;</span></a>
                 </div>
             </div>
-
-            {{-- Сетка динамических карточек картин --}}
-            <div class="artwork-grid">
-                @foreach($artworks as $artwork)
-                    <div class="artwork-card">
-
-                        {{-- Контейнер изображения --}}
-                        <div class="artwork-img-box">
-                            @if(!empty($artwork->image))
-                                <img src="{{ Storage::url($artwork->image) }}" alt="{{ $artwork->title }}">
-                            @else
-                                {{-- Заглушка на случай, если картинка не подгрузилась --}}
-                                <img src="{{ asset('img/product-img-8-300x400.jpg') }}" alt="Placeholder">
+            <div class="shop-products-grid">
+                @forelse($featuredProducts as $product)
+                    <div class="product-card">
+                        <div class="product-img-box">
+                            <img src="{{ asset('img/products_img/' . $product->image) }}" alt="{{ $product->title }}" class="product-img">
+                        </div>
+                        <div class="product-info">
+                            @if($product->subtitle)
+                                <span class="product-category">{{ $product->subtitle }}</span>
                             @endif
+                            <h4 class="product-title">{{ $product->title }}</h4>
+                            <span class="product-price">€{{ number_format($product->price, 2, '.', ' ') }}</span>
+                            <a href="#" class="product-add-btn">ADD TO CART</a>
                         </div>
-
-                        {{-- Инфо-блок под картинкой --}}
-                        <div class="artwork-info">
-                            <span class="artwork-category">{{ $artwork->category }}</span>
-                            <h3 class="artwork-title">{{ $artwork->title }}</h3>
-                            <span class="artwork-price">${{ number_format($artwork->price, 2) }}</span>
-
-                            <a href="#" class="add-to-cart-btn">ADD TO CART</a>
-                        </div>
-
                     </div>
-                @endforeach
+                @empty
+                    <div class="no-products" style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                        <p>No recent paintings found.</p>
+                    </div>
+                @endforelse
             </div>
-
         </div>
+
     </section>
-@endif
+

@@ -12,11 +12,11 @@ use App\Models\Exhibition;
 use App\Models\ExhibitionHeader;
 use App\Models\TestimonialSection;
 use App\Models\PromoSection;
-use App\Models\Artwork;
 use App\Models\NavigationItem;
 use App\Models\HeaderContact;
 use App\Models\LogoSetting;
 use App\Models\ContactMessage;
+use App\Models\Product;
 
 class HomeController extends Controller
 {
@@ -33,7 +33,6 @@ class HomeController extends Controller
         $exhibitionHeader = ExhibitionHeader::first();
         $testimonial = TestimonialSection::first();
         $promo = PromoSection::first();
-        $artworks = Artwork::latest()->take(4)->get();
         $artworkHeader = ArtworkHeader::first();
         $subscribeSection = \App\Models\SubscribeSection::first();
 
@@ -42,7 +41,13 @@ class HomeController extends Controller
         $contactData = HeaderContact::first();
         $logos = LogoSetting::first();
 
-        return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader', 'testimonial', 'promo', 'artworks', 'artworkHeader', 'subscribeSection', 'footerMenus', 'contactData', 'logos'));
+        // Вытаскиваем 4 последние активные картины из базы данных
+        $featuredProducts = Product::where('is_active', true)
+            ->latest() // Сортируем по дате добавления: сначала новые
+            ->take(4)  // Берем ровно 4 штуки
+            ->get();
+
+        return view('pages.home', compact('hero', 'energy', 'videoData', 'exhibitions', 'exhibitionHeader', 'testimonial', 'promo', 'artworkHeader', 'subscribeSection', 'footerMenus', 'contactData', 'logos', 'featuredProducts'));
     }
 
     /**
