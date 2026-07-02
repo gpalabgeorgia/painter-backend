@@ -2918,3 +2918,97 @@ body {
         transform: translateY(0);
     }
 }
+/* ==========================================================================
+   AUTH PAGES (LOGIN & REGISTER)
+   ========================================================================== */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 75vh;
+    background-color: #f8fafc; /* Светлый нейтральный фон */
+    padding: 40px 20px;
+}
+.auth-card {
+    background: #ffffff;
+    padding: 40px;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 4px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    text-align: center;
+}
+.auth-title {
+    font-family: 'Playfair Display', 'Times New Roman', serif; /* Твой фирменный шрифт с засечками */
+    font-size: 28px;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.auth-subtitle {
+    font-size: 14px;
+    color: #777;
+    margin-bottom: 30px;
+}
+.auth-form {
+    text-align: left;
+}
+.auth-form .form-group {
+    margin-bottom: 20px;
+}
+.auth-form .form-group label {
+    display: block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+.auth-form .form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    font-size: 14px;
+    color: #1a1a1a;
+    transition: border-color 0.3s ease;
+}
+.auth-form .form-group input:focus {
+    outline: none;
+    border-color: #e67e22; /* Твой оранжевый акцент */
+}
+.auth-submit-btn {
+    width: 100%;
+    padding: 15px;
+    background-color: #1a1a1a; /* Строгая темная кнопка */
+    color: #ffffff;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+}
+.auth-submit-btn:hover {
+    background-color: #e67e22; /* Оранжевый при наведении */
+}
+.auth-footer {
+    margin-top: 25px;
+    font-size: 14px;
+    color: #555;
+}
+.auth-footer a {
+    color: #e67e22; /* Красивая оранжевая ссылка */
+    text-decoration: none;
+    font-weight: 600;
+    margin-left: 5px;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s ease;
+}
+.auth-footer a:hover {
+    border-bottom-color: #e67e22;
+}

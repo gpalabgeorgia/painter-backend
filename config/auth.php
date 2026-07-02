@@ -41,6 +41,12 @@ return [
             'provider' => 'users',
         ],
 
+        // ДОБАВЛЯЕМ СЮДА GUARD ДЛЯ КЛИЕНТОВ:
+        'customer' => [
+            'driver' => 'session',
+            'provider' => 'customers',
+        ],
+
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
@@ -69,6 +75,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        // ДОБАВЛЯЕМ СЮДА PROVIDER ДЛЯ КЛИЕНТОВ:
+        'customers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Customer::class,
         ],
 
         // 'users' => [
