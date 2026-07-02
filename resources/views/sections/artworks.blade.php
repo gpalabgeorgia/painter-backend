@@ -7,7 +7,7 @@
                     <p>{{ $artworkHeader->subtitle ?? 'Tempor ac tincidunt feugiat dignissim quis sed donec cursus ornare varius sed sagittis nibh.' }}</p>
                 </div>
                 <div class="artwork-header-right">
-                    <a href="#" class="view-all-btn">VIEW ALL <span>&rarr;</span></a>
+                    <a href="{{ url('/shop') }}" class="view-all-btn">VIEW ALL <span>&rarr;</span></a>
                 </div>
             </div>
             <div class="shop-products-grid">
