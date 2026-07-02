@@ -11,6 +11,7 @@ use App\Http\Controllers\Front\ArtworksPageController;
 use App\Http\Controllers\Front\ExhibitionController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\AuthController;
+use App\Http\Controllers\Front\ProfileController;
 
 
 /*
@@ -82,3 +83,12 @@ Route::middleware('auth:customer')->group(function () {
 
 // Роут для перехода по ссылке из письма
 Route::get('/activate/{token}', [AuthController::class, 'activate']);
+
+Route::middleware('auth:customer')->group(function () {
+    // Страница профиля
+    Route::get('/account', [ProfileController::class, 'index'])->name('account');
+
+    // Обработчики форм
+    Route::post('/account/update-info', [ProfileController::class, 'updateInfo'])->name('account.update_info');
+    Route::post('/account/update-password', [ProfileController::class, 'updatePassword'])->name('account.update_password');
+});

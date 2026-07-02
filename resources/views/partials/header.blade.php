@@ -78,8 +78,16 @@
                 {{-- ЗОНА АВТОРИЗАЦИИ КЛИЕНТА --}}
                 @auth('customer')
                     <div class="user-dropdown-wrapper" style="position: relative; display: inline-block;">
-                        <button type="button" id="userMenuTriggerBtn" style="background: #333; color: #fff; border: none; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; font-size: 11px; font-weight: bold; text-transform: uppercase; display: flex; align-items: center; justify-content: center; font-family: inherit; transition: background 0.2s;">
-                            {{ mb_substr(auth('customer')->user()->name, 0, 1) }}{{ mb_substr(auth('customer')->user()->last_name, 0, 1) }}
+                        <button type="button" id="userMenuTriggerBtn" style="background: #333; color: #fff; border: 1px solid #ccc; width: 34px; height: 34px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: inherit; transition: background 0.2s; padding: 0; overflow: hidden;">
+                            @if(auth('customer')->user()->avatar)
+                                <!-- Если есть аватарка, выводим её -->
+                                <img src="{{ Storage::url(auth('customer')->user()->avatar) }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                            @else
+                                <!-- Если аватарки нет, показываем инициалы -->
+                                <span style="font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 0.5px;">
+                    {{ mb_substr(auth('customer')->user()->name, 0, 1) }}{{ mb_substr(auth('customer')->user()->last_name, 0, 1) }}
+                </span>
+                            @endif
                         </button>
 
                         <div id="userDropdownMenu" style="display: none; position: absolute; right: 0; top: calc(100% + 10px); background: #fff; min-width: 180px; box-shadow: 0px 8px 20px rgba(0,0,0,0.15); border: 1px solid #eee; border-radius: 4px; z-index: 1000; overflow: hidden;">
