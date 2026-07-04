@@ -22,7 +22,15 @@
                             @endif
                             <h4 class="product-title">{{ $product->title }}</h4>
                             <span class="product-price">€{{ number_format($product->price, 2, '.', ' ') }}</span>
-                            <a href="#" class="product-add-btn">ADD TO CART</a>
+                                @auth('customer')
+                                    <!-- Если пользователь вошел — оставляем твою кнопку (добавление в корзину) -->
+                                    <a href="#" class="product-add-btn" data-id="{{ $product->id }}">ADD TO CART</a>
+                                @else
+                                    <!-- Если гость — перенаправляем на страницу логина -->
+                                    <a href="{{ route('login') }}" class="product-add-btn" data-id="{{ $product->id }}">
+                                        Add to cart
+                                    </a>
+                                @endauth
                         </div>
                     </div>
                 @empty

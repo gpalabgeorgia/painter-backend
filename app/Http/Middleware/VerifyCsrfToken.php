@@ -12,6 +12,6 @@ class VerifyCsrfToken extends Middleware
      * @var array
      */
     protected $except = [
-        //
+        'cart/add', // Отключаем CSRF только для этого роута
     ];
 }

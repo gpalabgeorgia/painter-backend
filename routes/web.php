@@ -12,6 +12,7 @@ use App\Http\Controllers\Front\ExhibitionController;
 use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\AuthController;
 use App\Http\Controllers\Front\ProfileController;
+use App\Http\Controllers\Front\CartController;
 
 
 /*
@@ -84,6 +85,10 @@ Route::middleware('auth:customer')->group(function () {
 // Роут для перехода по ссылке из письма
 Route::get('/activate/{token}', [AuthController::class, 'activate']);
 
+// 1. AJAX добавление в корзину выносим ОТДЕЛЬНО (доступно всем, проверку делает контроллер)
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+
+// 2. Всё остальное, что ТРЕБУЕТ обязательного логина, оставляем внутри группы
 Route::middleware('auth:customer')->group(function () {
     // Страница профиля
     Route::get('/account', [ProfileController::class, 'index'])->name('account');
@@ -91,4 +96,11 @@ Route::middleware('auth:customer')->group(function () {
     // Обработчики форм
     Route::post('/account/update-info', [ProfileController::class, 'updateInfo'])->name('account.update_info');
     Route::post('/account/update-password', [ProfileController::class, 'updatePassword'])->name('account.update_password');
+
+    // Страница корзины
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+
+    // AJAX операции (обновление количества и удаление требуют авторизации)
+    Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
+    Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 });

@@ -68,10 +68,33 @@
                 </form>
 
                 <div class="header-cart">
-                    <span class="cart-total" id="openCartBtnText" style="cursor: pointer;">$0.00</span>
-                    <a href="#" class="cart-btn" id="openCartBtn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-                        <span class="cart-badge">0</span>
+                    @php
+                        $customerId = Auth::guard('customer')->id();
+                        $totalItems = 0;
+                        $totalPrice = 0;
+
+                        if ($customerId) {
+                            $cartItems = \App\Models\CartItem::with('product')->where('customer_id', $customerId)->get();
+                            $totalItems = $cartItems->sum('quantity');
+
+                            foreach ($cartItems as $item) {
+                                $totalPrice += ($item->product->price ?? 0) * $item->quantity;
+                            }
+                        }
+                    @endphp
+
+                        <!-- Теперь здесь гордый знак евро € -->
+                    <span class="cart-total" id="openCartBtnText" style="cursor: pointer;">
+                        €{{ number_format($totalPrice, 2, '.', '') }}
+                    </span>
+
+                    <a href="{{ route('cart.index') }}" class="cart-btn" id="openCartBtn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <path d="M16 10a4 4 0 0 1-8 0"></path>
+                        </svg>
+                        <span class="cart-badge">{{ $totalItems }}</span>
                     </a>
                 </div>
 
