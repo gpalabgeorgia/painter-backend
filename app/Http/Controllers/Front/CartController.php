@@ -10,6 +10,7 @@ use App\Models\NavigationItem;
 use App\Models\HeaderContact;
 use App\Models\LogoSetting;
 use App\Models\SubscribeSection;
+use Illuminate\Http\JsonResponse;
 
 class CartController extends Controller
 {
@@ -35,6 +36,43 @@ class CartController extends Controller
             'logos',
             'subscribeSection'
         ));
+    }
+
+    // НОВЫЙ МЕТОД: Железная синхронизация базы данных с фронтендом без localStorage
+    public function getCartData(): JsonResponse
+    {
+        $customerId = Auth::guard('customer')->id();
+        if (!$customerId) {
+            return response()->json(['items' => [], 'total' => 0, 'count' => 0], 401);
+        }
+
+        $cartItems = CartItem::with('product')->where('customer_id', $customerId)->get();
+
+        $itemsData = [];
+        $totalPrice = 0;
+
+        foreach ($cartItems as $item) {
+            if ($item->product) {
+                $price = (float)$item->product->price;
+                $totalPrice += $price;
+
+                // Собираем данные, адаптируя под структуру твоего проекта
+                $itemsData[] = [
+                    'id' => $item->id, // cart_item_id для удаления
+                    'product_id' => $item->product_id,
+                    'title' => $item->product->title ?? 'Картина',
+                    'price' => $price,
+                    // Если картинка лежит в другой переменной (например, image или main_image), замени свойство ниже:
+                    'img' => $item->product->image ? '/img/products_img/' . $item->product->image : '',
+                ];
+            }
+        }
+
+        return response()->json([
+            'items' => $itemsData,
+            'total' => $totalPrice,
+            'count' => count($itemsData)
+        ]);
     }
 
     // Метод добавления товара с расчетом количества и суммы для хедера

@@ -88,6 +88,11 @@ Route::get('/activate/{token}', [AuthController::class, 'activate']);
 // 1. AJAX добавление в корзину выносим ОТДЕЛЬНО (доступно всем, проверку делает контроллер)
 Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
 
+// 1. AJAX добавление в корзину выносим ОТДЕЛЬНО (доступно всем, проверку делает контроллер)
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+// Добавляем вот этот роут для мгновенной фоновой сверки данных:
+Route::get('/cart/data', [CartController::class, 'getCartData'])->name('cart.data');
+
 // 2. Всё остальное, что ТРЕБУЕТ обязательного логина, оставляем внутри группы
 Route::middleware('auth:customer')->group(function () {
     // Страница профиля
