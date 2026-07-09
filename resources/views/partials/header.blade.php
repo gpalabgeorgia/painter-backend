@@ -117,7 +117,7 @@
                             <a href="{{ url('/account') }}" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; border-bottom: 1px solid #f5f5f5; transition: background 0.15s;" onmouseover="this.style.background='#f9f9f9'" onmouseout="this.style.background='none'">
                                 Мой аккаунт
                             </a>
-                            <a href="{{ url('/orders') }}" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; border-bottom: 1px solid #f5f5f5; transition: background 0.15s;" onmouseover="this.style.background='#f9f9f9'" onmouseout="this.style.background='none'">
+                            <a href="{{ url('/cart') }}" style="color: #333; padding: 12px 16px; text-decoration: none; display: block; font-size: 14px; border-bottom: 1px solid #f5f5f5; transition: background 0.15s;" onmouseover="this.style.background='#f9f9f9'" onmouseout="this.style.background='none'">
                                 Мои покупки
                             </a>
                             <form action="{{ route('logout') }}" method="POST" style="margin: 0;">

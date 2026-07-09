@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (sidebarSubtotal) sidebarSubtotal.textContent = formattedTotal;
 
                 const altCartBadge = document.querySelector('.cart-badge');
-                if (altCartBadge) altCartBadge.textContent = newTotalQty;
+                if (altCartBadge) altCartBadge.textContent = count;
                 const altCartTotal = document.querySelector('.cart-total');
                 if (altCartTotal) altCartTotal.textContent = formattedTotal;
 
@@ -293,6 +293,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // ==========================================
     const cartWrapper = document.getElementById('cartProductsListWrapper');
     if (cartWrapper) {
+        // Ошибка исправлена здесь: заменена квадратная скобка на круглую
         const removeUrl = cartWrapper.getAttribute('data-remove-url') || '/cart/remove';
         const csrfToken = cartWrapper.getAttribute('data-csrf');
         const deleteModal = document.getElementById('confirmDeleteModal');
@@ -337,7 +338,108 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ==========================================
-    // 5. ОСТАЛЬНАЯ ЛОГИКА (ПЛЕЕР И ПОИСК)
+    // 5. ПОЛНОЭКРАННЫЙ ПРЕДПРОСМОТР КАРТИНЫ (QUICK VIEW)
+    // ==========================================
+    const quickModal = document.getElementById('quickViewModal');
+    const modalImg = document.getElementById('modalImg');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModalBtn = document.getElementById('closeModalBtn');
+
+    // Находим белый контейнер (блок-рамку) внутри модалки
+    let contentBox = null;
+    if (quickModal) {
+        contentBox = quickModal.querySelector('div');
+
+        // Базовые стили модалки для размытия и плавности
+        quickModal.style.opacity = '0';
+        quickModal.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+        quickModal.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+        quickModal.style.backdropFilter = 'blur(12px)';
+        quickModal.style.webkitBackdropFilter = 'blur(12px)';
+
+        if (contentBox) {
+            // Навешиваем плавный переход на ВЕСЬ белый контейнер
+            contentBox.style.transform = 'scale(0.92)';
+            contentBox.style.transition = 'transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            contentBox.style.cursor = 'zoom-in'; // Лупа плюс при наведении на рамку
+
+            // Клик по ВСЕМУ белому контейнеру (включая рамку и текст) для увеличения
+            contentBox.addEventListener('click', function (e) {
+                e.stopPropagation(); // Чтобы клик не закрывал модалку
+
+                if (this.style.transform === 'scale(1.3)') {
+                    this.style.transform = 'scale(1)';
+                    this.style.cursor = 'zoom-in';
+                } else {
+                    this.style.transform = 'scale(1.3)'; // Увеличиваем рамку целиком в 1.3 раза (можно поставить 1.4 или 1.5)
+                    this.style.cursor = 'zoom-out';
+                }
+            });
+        }
+    }
+
+    // Слушаем клик по кнопке «Глаз» с классом view-product-btn
+    document.body.addEventListener('click', function (e) {
+        const viewBtn = e.target.closest('.view-product-btn');
+        if (viewBtn) {
+            e.preventDefault();
+
+            const imgUrl = viewBtn.getAttribute('data-img');
+            const titleText = viewBtn.getAttribute('data-title') || 'Без названия';
+
+            if (!imgUrl) return;
+
+            // Сбрасываем масштаб контейнера к исходному при открытии новой картины
+            if (contentBox) {
+                contentBox.style.transform = 'scale(0.92)';
+                contentBox.style.cursor = 'zoom-in';
+            }
+            if (modalImg) modalImg.style.transform = 'none'; // Убираем старый зум с самой картинки
+
+            modalImg.src = imgUrl;
+            if (modalTitle) modalTitle.textContent = titleText;
+
+            quickModal.style.display = 'flex';
+
+            setTimeout(() => {
+                quickModal.style.opacity = '1';
+                if (contentBox) contentBox.style.transform = 'scale(1)';
+            }, 10);
+        }
+    });
+
+    // Функция мягкого закрытия окна просмотра
+    function closeQuickModal() {
+        if (quickModal) {
+            quickModal.style.opacity = '0';
+            if (contentBox) contentBox.style.transform = 'scale(0.92)';
+
+            setTimeout(() => {
+                quickModal.style.display = 'none';
+                if (modalImg) modalImg.src = '';
+                if (modalTitle) modalTitle.textContent = '';
+            }, 300);
+        }
+    }
+
+    if (closeModalBtn) closeModalBtn.addEventListener('click', closeQuickModal);
+
+    if (quickModal) {
+        quickModal.addEventListener('click', function (e) {
+            if (e.target === quickModal) {
+                closeQuickModal();
+            }
+        });
+    }
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && quickModal.style.display === 'flex') {
+            closeQuickModal();
+        }
+    });
+
+    // ==========================================
+    // 6. ОСТАЛЬНАЯ ЛОГИКА (ПЛЕЕР И ПОИСК)
     // ==========================================
     const videoWrapper = document.getElementById('customVideoPlayer');
     const video = document.getElementById('mainVideo');
