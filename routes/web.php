@@ -13,6 +13,7 @@ use App\Http\Controllers\Front\HomeController;
 use App\Http\Controllers\Front\AuthController;
 use App\Http\Controllers\Front\ProfileController;
 use App\Http\Controllers\Front\CartController;
+use App\Http\Controllers\Front\CustomerAddressController;
 
 
 /*
@@ -102,10 +103,18 @@ Route::middleware('auth:customer')->group(function () {
     Route::post('/account/update-info', [ProfileController::class, 'updateInfo'])->name('account.update_info');
     Route::post('/account/update-password', [ProfileController::class, 'updatePassword'])->name('account.update_password');
 
+    // Адреса доставки (Новый роут для сохранения)
+    Route::post('/account/addresses', [CustomerAddressController::class, 'store'])->name('account.addresses.store');
+
     // Страница корзины
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
     // AJAX операции (обновление количества и удаление требуют авторизации)
     Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
+
+    // Новый роут для страницы чекаута
+    Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout.index');
+
+    Route::delete('/account/addresses/{id}', [CustomerAddressController::class, 'destroy'])->name('account.addresses.destroy');
 });

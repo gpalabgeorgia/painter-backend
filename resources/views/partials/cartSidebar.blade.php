@@ -69,7 +69,7 @@
         </div>
         <div class="cart-sidebar-actions" style="padding: 0 20px 20px 20px; display: flex; flex-direction: column; gap: 10px;">
             <a href="{{ url('cart') }}" class="cart-action-btn btn-view-cart" style="display: block; text-align: center; padding: 12px; background: #fff; color: #000; border: 1px solid #000; text-decoration: none; font-size: 12px; font-weight: bold; letter-spacing: 1px;">VIEW CART</a>
-            <a href="#" class="cart-action-btn btn-checkout" style="display: block; text-align: center; padding: 12px; background: #000; color: #fff; border: 1px solid #000; text-decoration: none; font-size: 12px; font-weight: bold; letter-spacing: 1px;">CHECKOUT</a>
+            <a href="{{ url('/checkout') }}" class="cart-action-btn btn-checkout" style="display: block; text-align: center; padding: 12px; background: #000; color: #fff; border: 1px solid #000; text-decoration: none; font-size: 12px; font-weight: bold; letter-spacing: 1px;">CHECKOUT</a>
         </div>
     </div>
 </div>

@@ -168,4 +168,23 @@ class CartController extends Controller
 
         return response()->json(['success' => false], 404);
     }
+
+    /**
+     * Отображение страницы оформления заказа (Checkout)
+     */
+    public function checkout()
+    {
+        $footerMenus = NavigationItem::all();
+        $contactData = HeaderContact::first();
+        $logos = LogoSetting::first();
+        // Получаем текущего авторизованного клиента по твоему гарду
+        $customer = Auth::guard('customer')->user();
+
+        // Если вдруг зашёл гость (неавторизован), кидаем его на логин
+        if (!$customer) {
+            return redirect()->route('login'); // или твой роут логина
+        }
+        // Пока просто возвращаем пустую страницу, которую создали
+        return view('pages.cart.checkout', compact('footerMenus', 'contactData', 'logos', 'customer'));
+    }
 }

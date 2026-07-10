@@ -57,8 +57,11 @@ class CustomerResource extends Resource
                     ->searchable()
                     ->label('Эл. почта'),
 
-                TextColumn::make('phone')
-                    ->label('Телефон'),
+                TextColumn::make('addresses.phone')
+                    ->label('Телефон')
+                    ->default('Не указан')
+                    // Очищаем массив от пустых значений и убираем дубликаты номеров
+                    ->formatStateUsing(fn ($state) => is_array($state) ? implode(', ', array_unique(array_filter($state))) : $state),
 
                 TextColumn::make('warning_count')
                     ->sortable()

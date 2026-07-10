@@ -83,18 +83,21 @@
                         }
                     @endphp
 
-                        <!-- Теперь здесь гордый знак евро € -->
-                    <span class="cart-total" id="openCartBtnText" style="cursor: pointer;">
+                    <a href="{{ route('cart.index') }}" class="cart-btn" id="openCartBtn" style="display: inline-flex; align-items: center; gap: 10px; text-decoration: none;">
+
+                    <span class="cart-total" id="openCartBtnText" style="cursor: pointer; margin-right: 2px;">
                         €{{ number_format($totalPrice, 2, '.', '') }}
                     </span>
 
-                    <a href="{{ route('cart.index') }}" class="cart-btn" id="openCartBtn">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                            <line x1="3" y1="6" x2="21" y2="6"></line>
-                            <path d="M16 10a4 4 0 0 1-8 0"></path>
-                        </svg>
-                        <span class="cart-badge">{{ $totalItems }}</span>
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                <line x1="3" y1="6" x2="21" y2="6"></line>
+                                <path d="M16 10a4 4 0 0 1-8 0"></path>
+                            </svg>
+                            <span class="cart-badge">{{ $totalItems }}</span>
+                        </div>
+
                     </a>
                 </div>
 
