@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
 use App\Models\Order;
+use App\Models\Notification;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -131,7 +132,6 @@ class OrderResource extends Resource
 
                                 foreach ($record->items as $item) {
                                     // Подтягиваем путь к картинке из связанного продукта
-                                    // Замени 'image' на свою колонку в таблице products, если она называется иначе
                                     $imagePath = $item->product && $item->product->image
                                         ? asset('img/products_img/' . $item->product->image)
                                         : 'https://placehold.co/80x80?text=No+Image';
@@ -139,7 +139,7 @@ class OrderResource extends Resource
                                     $html .= "
                                 <div style='display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;'>
                                     <div style='display: flex; align-items: center; gap: 15px;'>
-                                        <img src='{$imagePath}' style='width: 60px; height: 60px; object-cover: cover; border-radius: 6px; border: 1px solid #d1d5db;' alt='' />
+                                        <img src='{$imagePath}' style='width: 60px; height: 60px; object-fit: cover; border-radius: 6px; border: 1px solid #d1d5db;' alt='' />
                                         <div>
                                             <div style='font-weight: 600; color: #1f2937;'>{$item->product_title}</div>
                                             <div style='font-size: 12px; color: #6b7280;'>ID товара: {$item->product_id}</div>
@@ -172,11 +172,34 @@ class OrderResource extends Resource
                             ->label('Адрес доставки:')
                             ->content($record->delivery_address),
                     ])
-                    // Сохраняем измененный статус при нажатии кнопки в модалке
+                    // Сохраняем измененный статус при нажатии кнопки в модалке и создаем уведомление
                     ->action(function ($record, array $data): void {
-                        $record->update([
-                            'status' => $data['status']
-                        ]);
+                        $oldStatus = $record->status;
+                        $newStatus = $data['status'];
+
+                        if ($oldStatus !== $newStatus) {
+                            $record->update([
+                                'status' => $newStatus
+                            ]);
+
+                            $statuses = [
+                                'new' => 'Новый',
+                                'processing' => 'В обработке',
+                                'completed' => 'Завершен',
+                                'cancelled' => 'Отменен',
+                            ];
+
+                            $statusName = $statuses[$newStatus] ?? $newStatus;
+
+                            // Просто создаем уведомление в базе. Без сокетов.
+                            Notification::create([
+                                'customer_id' => $record->customer_id,
+                                'title' => "Обновление статуса заказа №{$record->id}",
+                                'message' => "Статус вашего заказа успешно изменен на «{$statusName}».",
+                                'type' => $newStatus === 'cancelled' ? 'danger' : ($newStatus === 'completed' ? 'success' : 'info'),
+                                'is_read' => false,
+                            ]);
+                        }
                     }),
             ]);
     }

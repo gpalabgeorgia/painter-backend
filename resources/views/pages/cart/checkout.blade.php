@@ -100,13 +100,6 @@
                             <input type="email" name="email" value="{{ old('email', $customer->email ?? '') }}" class="checkout-input" required>
                         </div>
                     </div>
-                    <div class="additional-info">
-                        <h3>Additional information</h3>
-                        <div class="form-group">
-                            <label>Order notes (optional)</label>
-                            <textarea class="checkout-textarea" placeholder="Notes about your order, e.g. special notes for delivery."></textarea>
-                        </div>
-                    </div>
                 </form>
                 <div class="order-review-box">
                     <h3>Your order</h3>

@@ -50,4 +50,9 @@ class Customer extends Authenticatable
         return $this->hasMany(Order::class, 'customer_id');
     }
 
+    public function notifications()
+    {
+        return $this->hasMany(Notification::class)->latest();
+    }
+
 }

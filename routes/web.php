@@ -115,4 +115,8 @@ Route::middleware('auth:customer')->group(function () {
 
     // Создание заказа из чекаута (Теперь сессия пользователя железно не потеряется)
     Route::post('/checkout/store', [CartController::class, 'storeOrder'])->name('checkout.store');
+
+    Route::get('/account/messages', [AuthController::class, 'messages'])->name('profile.notifications');
+    Route::post('/account/messages/{id}/reply', [AuthController::class, 'reply'])->name('profile.notifications.reply');
+    Route::delete('/account/messages/{id}', [AuthController::class, 'destroy'])->name('profile.notifications.destroy');
 });

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use App\Models\Notification;
 
 class AuthController extends Controller
 {
@@ -136,4 +137,56 @@ class AuthController extends Controller
 
         return redirect()->to('/');
     }
+
+    public function messages()
+    {
+        $customer = auth('customer')->user();
+        $logos = LogoSetting::first();
+        $footerMenus = NavigationItem::all();
+
+        // Показываем только корневые сообщения от системы
+        $messages = $customer->notifications()
+            ->whereNull('parent_id')
+            ->where('sender', 'system')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Помечаем только системные как прочитанные
+        $customer->notifications()
+            ->where('sender', 'system')
+            ->where('is_read', false)
+            ->update(['is_read' => true]);
+
+        return view('pages.auth.messages', compact('messages', 'logos', 'footerMenus'));
+    }
+
+// Новый метод для отправки ответа
+    public function reply(Request $request, $id)
+    {
+        $request->validate([
+            'message' => 'required|string|max:5000',
+        ]);
+
+        $parentMessage = Notification::findOrFail($id);
+
+        Notification::create([
+            'customer_id' => auth('customer')->id(),
+            'parent_id'   => $parentMessage->id,
+            'title'       => 'Ответ на: ' . $parentMessage->title,
+            'message'     => $request->message,
+            'sender'      => 'customer',
+            'is_read'     => false, // Админ увидит как непрочитанное
+        ]);
+
+        return back()->with('success', 'Ответ успешно отправлен.');
+    }
+
+    // Новый метод для удаления
+        public function destroy($id)
+        {
+            $message = Notification::where('customer_id', auth('customer')->id())->findOrFail($id);
+            $message->delete(); // Каскадом удалятся и ответы на него
+
+            return back()->with('success', 'Сообщение удалено.');
+        }
 }
