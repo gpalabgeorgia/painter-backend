@@ -15,17 +15,17 @@ use App\Http\Controllers\Front\ProfileController;
 use App\Http\Controllers\Front\CartController;
 use App\Http\Controllers\Front\CustomerAddressController;
 
-
 /*
 |--------------------------------------------------------------------------
 | Front Routes
 |--------------------------------------------------------------------------
 |
 */
+
 // Главная страница сайта
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Чистый, читаемый роут для страницы About
+// Страница About
 Route::get('/about', [AboutController::class, 'index'])->name('about');
 
 // Поиск
@@ -33,12 +33,10 @@ Route::get('/search', [SearchController::class, 'index'])->name('search');
 
 // Восстановление пароля админа
 Route::get('/password-reset/{token}', function ($token) {
-    // Сюда пользователь попадет, если кликнет по ссылке из письма.
-    // Пока просто перенаправляем его на главную страницу админки, где он сможет войти
     return redirect()->to('/admin/login?token=' . $token);
 })->name('password.reset');
 
-// Редактирование Названий выствок
+// Редактирование Названий выставок в админке
 Route::post('/admin/exhibitions/save-headers', function (Request $request) {
     $header = ExhibitionHeader::first() ?? new ExhibitionHeader();
     $header->fill([
@@ -69,7 +67,14 @@ Route::post('/contact', [HomeController::class, 'storeContact'])->name('contact.
 // Магазин
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 
-// Маршруты для гостей (доступны, если клиент не авторизован)
+// Роут для перехода по ссылке из письма
+Route::get('/activate/{token}', [AuthController::class, 'activate']);
+
+// AJAX добавление в корзину (контроллер сам разрулит гостя)
+Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
+
+
+// Маршруты для гостей (доступны, если клиент НЕ авторизован)
 Route::middleware('guest:customer')->group(function () {
     Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -78,43 +83,36 @@ Route::middleware('guest:customer')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 });
 
-// Выход из аккаунта (доступен только авторизованным клиентам)
+
+// Маршруты, которые ТРЕБУЮТ обязательной авторизации покупателя
 Route::middleware('auth:customer')->group(function () {
+    // Выход из аккаунта
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-});
 
-// Роут для перехода по ссылке из письма
-Route::get('/activate/{token}', [AuthController::class, 'activate']);
-
-// 1. AJAX добавление в корзину выносим ОТДЕЛЬНО (доступно всем, проверку делает контроллер)
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-
-// 1. AJAX добавление в корзину выносим ОТДЕЛЬНО (доступно всем, проверку делает контроллер)
-Route::post('/cart/add', [CartController::class, 'add'])->name('cart.add');
-// Добавляем вот этот роут для мгновенной фоновой сверки данных:
-Route::get('/cart/data', [CartController::class, 'getCartData'])->name('cart.data');
-
-// 2. Всё остальное, что ТРЕБУЕТ обязательного логина, оставляем внутри группы
-Route::middleware('auth:customer')->group(function () {
     // Страница профиля
     Route::get('/account', [ProfileController::class, 'index'])->name('account');
 
-    // Обработчики форм
+    // Обработчики форм профиля
     Route::post('/account/update-info', [ProfileController::class, 'updateInfo'])->name('account.update_info');
     Route::post('/account/update-password', [ProfileController::class, 'updatePassword'])->name('account.update_password');
 
-    // Адреса доставки (Новый роут для сохранения)
+    // Адреса доставки
     Route::post('/account/addresses', [CustomerAddressController::class, 'store'])->name('account.addresses.store');
+    Route::delete('/account/addresses/{id}', [CustomerAddressController::class, 'destroy'])->name('account.addresses.destroy');
 
     // Страница корзины
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 
-    // AJAX операции (обновление количества и удаление требуют авторизации)
+    // Фоновое получение данных корзины
+    Route::get('/cart/data', [CartController::class, 'getCartData'])->name('cart.data');
+
+    // AJAX операции с корзиной
     Route::post('/cart/update', [CartController::class, 'update'])->name('cart.update');
     Route::post('/cart/remove', [CartController::class, 'remove'])->name('cart.remove');
 
-    // Новый роут для страницы чекаута
+    // Страница оформления заказа (Чекаут)
     Route::get('/checkout', [CartController::class, 'checkout'])->name('checkout.index');
 
-    Route::delete('/account/addresses/{id}', [CustomerAddressController::class, 'destroy'])->name('account.addresses.destroy');
+    // Создание заказа из чекаута (Теперь сессия пользователя железно не потеряется)
+    Route::post('/checkout/store', [CartController::class, 'storeOrder'])->name('checkout.store');
 });

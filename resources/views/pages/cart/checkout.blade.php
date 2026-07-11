@@ -209,74 +209,163 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const orderItemsContainer = document.getElementById('checkoutOrderItems');
-            const subtotalElement = document.getElementById('checkoutSubtotal');
-            const totalElement = document.getElementById('checkoutTotal');
+    <!-- Модальное окно успешного заказа -->
+    <div id="orderSuccessModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 10000; opacity: 0; transition: opacity 0.3s ease;">
+        <div id="orderSuccessBox" style="background: #fff; padding: 40px; border-radius: 8px; max-width: 450px; width: 100%; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.2); transform: translateY(-30px); transition: transform 0.3s ease;">
+            <div style="width: 60px; height: 60px; background: #e6f7ed; color: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <h3 style="margin: 0 0 10px 0; font-size: 22px; font-weight: 600; color: #1a1a1a;">Thank You!</h3>
+            <p style="margin: 0 0 25px 0; font-size: 15px; color: #666; line-height: 1.5;">Your order has been placed successfully.</p>
+            <div style="font-size: 13px; color: #999;">Redirecting to home page...</div>
+        </div>
+    </div>
 
-            // Логика модального окна добавления адреса
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Элементы таблицы заказа
+            const orderItemsContainer = document.getElementById('checkoutOrderItems');
+            const subtotalContainer = document.getElementById('checkoutSubtotal');
+            const totalContainer = document.getElementById('checkoutTotal');
+            const checkoutForm = document.getElementById('checkoutForm');
+
+            // Элементы модалки добавления адреса
             const addModal = document.getElementById('addAddressModal');
             const addBox = document.getElementById('addAddressBox');
             const openAddBtn = document.getElementById('openAddAddressModal');
             const closeAddBtn = document.getElementById('closeAddAddressModal');
             const cancelAddBtn = document.getElementById('cancelAddAddress');
 
-            function openAddModal() {
-                if (addModal && addBox) {
-                    addModal.style.display = 'flex';
+            // Функции модального окна
+            function openModal(modal, box) {
+                if (modal && box) {
+                    modal.style.display = 'flex';
                     setTimeout(() => {
-                        addModal.style.opacity = '1';
-                        addBox.style.transform = 'translateY(0)';
+                        modal.style.opacity = '1';
+                        box.style.transform = 'translateY(0)';
                     }, 10);
                 }
             }
 
-            function closeAddModal() {
-                if (addModal && addBox) {
-                    addModal.style.opacity = '0';
-                    addBox.style.transform = 'translateY(-20px)';
+            function closeModal(modal, box) {
+                if (modal && box) {
+                    modal.style.opacity = '0';
+                    box.style.transform = 'translateY(-20px)';
                     setTimeout(() => {
-                        addModal.style.display = 'none';
+                        modal.style.display = 'none';
                     }, 300);
                 }
             }
 
-            if (openAddBtn) openAddBtn.addEventListener('click', openAddModal);
-            if (closeAddBtn) closeAddBtn.addEventListener('click', closeAddModal);
-            if (cancelAddBtn) cancelAddBtn.addEventListener('click', closeAddModal);
+            // Слушатели для модалки адреса
+            if (openAddBtn) openAddBtn.addEventListener('click', () => openModal(addModal, addBox));
+            if (closeAddBtn) closeAddBtn.addEventListener('click', () => closeModal(addModal, addBox));
+            if (cancelAddBtn) cancelAddBtn.addEventListener('click', () => closeModal(addModal, addBox));
 
             window.addEventListener('click', function(e) {
-                if (e.target === addModal) {
-                    closeAddModal();
-                }
+                if (e.target === addModal) closeModal(addModal, addBox);
             });
 
-            // Загружаем сохраненную корзину
-            const savedCart = localStorage.getItem('shoppingCartArray');
-            const cartData = savedCart ? JSON.parse(savedCart) : [];
-            if (cartData.length === 0) {
-                // Если корзина пуста, перенаправляем обратно на страницу каталога
-                orderItemsContainer.innerHTML = '<tr><td colspan="2" style="text-align:center; padding: 20px; color:#999;">Your cart is empty</td></tr>';
-                return;
-            }
-            let itemsHTML = '';
-            let orderSum = 0;
-            // Генерируем строки для таблицы заказа
-            cartData.forEach(item => {
-                const itemTotal = item.qty * item.price;
-                orderSum += itemTotal;
-                itemsHTML += `
-                    <tr class="product-item-row">
-                        <td>${item.name} <strong style="color: #1a1a1a;">&times; ${item.qty}</strong></td>
-                        <td class="text-right">$${itemTotal.toFixed(2)}</td>
+            // 1. Загрузка данных корзины при старте страницы
+            if (orderItemsContainer) {
+                fetch('/cart/data', {
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'Accept': 'application/json'
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Failed to load cart data');
+                        return response.json();
+                    })
+                    .then(data => {
+                        orderItemsContainer.innerHTML = '';
+
+                        if (data.items.length === 0) {
+                            orderItemsContainer.innerHTML = `
+                    <tr>
+                        <td colspan="2" class="text-center" style="color: #999; padding: 20px 0;">Your cart is empty</td>
                     </tr>
                 `;
-            });
-            // Выводим все данные на страницу
-            orderItemsContainer.innerHTML = itemsHTML;
-            subtotalElement.textContent = `$${orderSum.toFixed(2)}`;
-            totalElement.textContent = `$${orderSum.toFixed(2)}`;
+                            subtotalContainer.textContent = '€0.00';
+                            totalContainer.textContent = '€0.00';
+                            return;
+                        }
+
+                        // Рендерим продукты без количества
+                        data.items.forEach(item => {
+                            const tr = document.createElement('tr');
+                            tr.innerHTML = `
+                    <td>${item.title}</td>
+                    <td class="text-right">€${Number(item.price).toFixed(2)}</td>
+                `;
+                            orderItemsContainer.appendChild(tr);
+                        });
+
+                        const formattedTotal = '€' + Number(data.total).toFixed(2);
+                        subtotalContainer.textContent = formattedTotal;
+                        totalContainer.textContent = formattedTotal;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching order review:', error);
+                        orderItemsContainer.innerHTML = '<tr><td colspan="2" class="text-danger">Error loading order items</td></tr>';
+                    });
+            }
+
+            // 2. Обработка клика на PLACE ORDER и отправка заказа
+            if (checkoutForm) {
+                checkoutForm.addEventListener('submit', function (e) {
+                    e.preventDefault();
+
+                    const formData = new FormData(checkoutForm);
+
+                    const notesTextarea = document.querySelector('.checkout-textarea');
+                    if (notesTextarea) {
+                        formData.append('notes', notesTextarea.value);
+                    }
+
+                    fetch('{{ route("checkout.store") }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Accept': 'application/json'
+                        },
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Находим элементы новой модалки
+                                const successModal = document.getElementById('orderSuccessModal');
+                                const successBox = document.getElementById('orderSuccessBox');
+
+                                if (successModal && successBox) {
+                                    successModal.style.display = 'flex';
+                                    setTimeout(() => {
+                                        successModal.style.opacity = '1';
+                                        successBox.style.transform = 'translateY(0)';
+                                    }, 10);
+
+                                    // Ждем 2.5 секунды, чтобы пользователь порадовался покупке, и редиректим
+                                    setTimeout(() => {
+                                        window.location.href = data.redirect;
+                                    }, 2500);
+                                } else {
+                                    window.location.href = data.redirect;
+                                }
+                            } else {
+                                alert(data.message || 'Something went wrong');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error creating order:', error);
+                            alert('An error occurred while placing the order.');
+                        });
+                });
+            }
         });
     </script>
 @endsection

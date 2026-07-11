@@ -11,6 +11,9 @@ use App\Models\HeaderContact;
 use App\Models\LogoSetting;
 use App\Models\SubscribeSection;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
+use App\Models\Order;
+use App\Models\OrderItem;
 
 class CartController extends Controller
 {
@@ -172,19 +175,102 @@ class CartController extends Controller
     /**
      * Отображение страницы оформления заказа (Checkout)
      */
+    /**
+     * Отображение страницы оформления заказа (Checkout)
+     */
     public function checkout()
     {
         $footerMenus = NavigationItem::all();
         $contactData = HeaderContact::first();
         $logos = LogoSetting::first();
+
         // Получаем текущего авторизованного клиента по твоему гарду
         $customer = Auth::guard('customer')->user();
 
         // Если вдруг зашёл гость (неавторизован), кидаем его на логин
         if (!$customer) {
-            return redirect()->route('login'); // или твой роут логина
+            return redirect()->route('login');
         }
-        // Пока просто возвращаем пустую страницу, которую создали
-        return view('pages.cart.checkout', compact('footerMenus', 'contactData', 'logos', 'customer'));
+
+        $customerId = $customer->id;
+
+        // Вытаскиваем товары корзины вместе с продуктами
+        $cartItems = CartItem::with('product')->where('customer_id', $customerId)->get();
+
+        // Считаем общую стоимость заказа
+        $totalPrice = 0;
+        foreach ($cartItems as $item) {
+            $totalPrice += ($item->product->price ?? 0);
+        }
+
+        // Передаем cartItems и totalPrice в представление checkout
+        return view('pages.cart.checkout', compact(
+            'footerMenus',
+            'contactData',
+            'logos',
+            'customer',
+            'cartItems',
+            'totalPrice'
+        ));
+    }
+
+    public function storeOrder(Request $request)
+    {
+        $customer = Auth::guard('customer')->user();
+        if (!$customer) {
+            return response()->json(['success' => false, 'message' => 'User not authenticated'], 401);
+        }
+
+        // 1. Получаем все товары из корзины этого покупателя
+        $cartItems = CartItem::with('product')->where('customer_id', $customer->id)->get();
+
+        if ($cartItems->isEmpty()) {
+            return response()->json(['success' => false, 'message' => 'Your cart is empty'], 400);
+        }
+
+        // 2. Собираем адрес доставки, который выбрал пользователь (или ввёл в форму)
+        // Пока для простоты берем адрес, который прилетит из формы
+        $deliveryAddress = $request->input('address') . ', ' . $request->input('city') . ', ' . $request->input('region') . ', ' . $request->input('zip_code') . ', ' . $request->input('country');
+
+        // Открываем транзакцию базы данных, чтобы всё сохранилось без сбоев
+        DB::beginTransaction();
+        try {
+            // 3. Создаем ОДИН общий заказ со статусом "new"
+            $order = Order::create([
+                'customer_id' => $customer->id,
+                'delivery_address' => $deliveryAddress,
+                'status' => 'new', // Твой статус по умолчанию
+            ]);
+
+            // 4. Переносим каждую картину из корзины в таблицу order_items
+            foreach ($cartItems as $cartItem) {
+                if ($cartItem->product) {
+                    OrderItem::create([
+                        'order_id' => $order->id,
+                        'product_id' => $cartItem->product_id,
+                        'product_title' => $cartItem->product->title ?? 'Artwork',
+                        'price' => $cartItem->product->price ?? 0,
+                    ]);
+                }
+            }
+
+            // 5. Железно очищаем корзину покупателя, так как заказ оформлен
+            CartItem::where('customer_id', $customer->id)->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Order placed successfully!',
+                'redirect' => url('/') // Временно на главную, потом поменяешь куда надо
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Error: ' . $e->getMessage()
+            ], 500);
+        }
     }
 }
