@@ -9,6 +9,10 @@ use Filament\Resources\Form;
 use Filament\Resources\Resource;
 use Filament\Resources\Table;
 use Filament\Tables;
+use Filament\Tables\Actions\Action;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Select;
+use Illuminate\Support\HtmlString;
 
 class OrderResource extends Resource
 {
@@ -29,41 +33,43 @@ class OrderResource extends Resource
     {
         return $form
             ->schema([
+                // Карточка со списком товаров в заказе
                 Forms\Components\Card::make()
+                    ->title('Состав заказа')
                     ->schema([
-                        Forms\Components\Placeholder::make('customer_name')
-                            ->label('Покупатель')
-                            ->content(fn ($record): string => $record && $record->customer ? "{$record->customer->first_name} {$record->customer->last_name}" : '—'),
+                        Forms\Components\Repeater::make('items')
+                            ->relationship('items') // Использует связь из модели Order
+                            ->schema([
+                                Forms\Components\TextInput::make('product_title')
+                                    ->label('Название картины')
+                                    ->disabled(), // Запрещаем редактировать название картины
+                                Forms\Components\TextInput::make('price')
+                                    ->label('Цена')
+                                    ->numeric()
+                                    ->prefix('€')
+                                    ->disabled(), // Запрещаем редактировать цену
+                            ])
+                            ->columns(2)
+                            ->disableItemCreation() // Админ не должен сам добавлять картины в заказ
+                            ->disableItemDeletion() // Админ не должен удалять картины из заказа
+                            ->disableItemMovement(),
+                    ])->columnSpan(2),
 
-                        Forms\Components\Placeholder::make('customer_email')
-                            ->label('Email')
-                            ->content(fn ($record): string => $record && $record->customer ? ($record->customer->email ?? '—') : '—'),
-
-                        Forms\Components\Placeholder::make('customer_phone')
-                            ->label('Номер телефона')
-                            ->content(fn ($record): string => $record && $record->customer ? ($record->customer->phone ?? '—') : '—'),
-
-                        Forms\Components\Placeholder::make('created_at')
-                            ->label('Дата покупки')
-                            ->content(fn ($record): string => $record && $record->created_at ? $record->created_at->format('d.m.Y H:i') : '—'),
-
-                        Forms\Components\Textarea::make('delivery_address')
-                            ->label('Полный адрес доставки')
-                            ->disabled() // Блокируем изменение адреса, чтобы менеджер ничего случайно не стёр
-                            ->rows(3)
-                            ->columnSpan('full'),
-
+                // Карточка управления статусом
+                Forms\Components\Card::make()
+                    ->title('Управление заказом')
+                    ->schema([
                         Forms\Components\Select::make('status')
                             ->label('Статус заказа')
-                            ->required()
                             ->options([
                                 'new' => 'Новый',
-                                'active' => 'Активный',
-                                'completed' => 'Завершенный',
+                                'processing' => 'В обработке',
+                                'completed' => 'Завершен',
+                                'cancelled' => 'Отменен',
                             ])
-                            ->columnSpan('full'),
-                    ])->columns(2)
-            ]);
+                            ->required(),
+                    ])->columnSpan(1),
+            ])->columns(3);
     }
 
     // Таблица вывода списка всех заказов
@@ -71,63 +77,107 @@ class OrderResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('customer.first_name')
-                    ->label('Имя')
-                    ->searchable()
+                Tables\Columns\TextColumn::make('id')
+                    ->label('№ Заказа')
                     ->sortable(),
+
+                Tables\Columns\TextColumn::make('customer.name')
+                    ->label('Имя')
+                    ->searchable(),
 
                 Tables\Columns\TextColumn::make('customer.last_name')
                     ->label('Фамилия')
-                    ->searchable()
-                    ->sortable(),
-
-                Tables\Columns\TextColumn::make('customer.email')
-                    ->label('Email')
                     ->searchable(),
 
-                Tables\Columns\TextColumn::make('customer.phone')
-                    ->label('Телефон')
-                    ->searchable()
-                    ->default('—'),
+                Tables\Columns\TextColumn::make('customer.email')
+                    ->label('Email'),
+
+                // Считаем общую сумму заказа
+                Tables\Columns\TextColumn::make('items_sum_price')
+                    ->sum('items', 'price')
+                    ->label('Сумма заказа')
+                    ->getStateUsing(function ($record) {
+                        // Берем сумму всех айтемов и форматируем вручную
+                        $sum = $record->items->sum('price');
+                        return '€' . number_format($sum, 2, '.', ' ');
+                    }),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Дата покупки')
-                    ->dateTime('d.m.Y H:i')
-                    ->sortable(),
+                    ->dateTime('d.m.Y H:i'),
 
-                Tables\Columns\TextColumn::make('delivery_address')
-                    ->label('Адрес доставки')
-                    ->limit(40),
-
-                // Статус-badge под Filament v2
                 Tables\Columns\BadgeColumn::make('status')
                     ->label('Статус')
-                    ->enum([
-                        'new' => 'Новый',
-                        'active' => 'Активный',
-                        'completed' => 'Завершенный',
-                    ])
                     ->colors([
-                        'danger' => 'new',       // Красный
-                        'warning' => 'active',   // Жёлтый
-                        'success' => 'completed', // Зелёный
-                    ]),
-            ])
-            ->filters([
-                Tables\Filters\SelectFilter::make('status')
-                    ->label('Статус')
-                    ->options([
-                        'new' => 'Новые',
-                        'active' => 'Активные',
-                        'completed' => 'Завершенные',
+                        'warning' => 'new',
+                        'primary' => 'processing',
+                        'success' => 'completed',
+                        'danger' => 'cancelled',
                     ]),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-            ])
-            ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Современная модалка с блоками товаров и сменой статуса
+                Action::make('view_order')
+                    ->label('Просмотр')
+                    ->icon('heroicon-o-eye')
+                    ->modalHeading('Детали заказа')
+                    ->modalButton('Сохранить статус')
+                    ->form(fn ($record) => [
+                        // Блок со списком купленных продуктов
+                        Placeholder::make('items_details')
+                            ->label('Купленные картины:')
+                            ->content(function () use ($record) {
+                                $html = '<div class="space-y-3" style="margin-top: 10px;">';
+
+                                foreach ($record->items as $item) {
+                                    // Подтягиваем путь к картинке из связанного продукта
+                                    // Замени 'image' на свою колонку в таблице products, если она называется иначе
+                                    $imagePath = $item->product && $item->product->image
+                                        ? asset('img/products_img/' . $item->product->image)
+                                        : 'https://placehold.co/80x80?text=No+Image';
+
+                                    $html .= "
+                                <div style='display: flex; align-items: center; justify-content: space-between; padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;'>
+                                    <div style='display: flex; align-items: center; gap: 15px;'>
+                                        <img src='{$imagePath}' style='width: 60px; height: 60px; object-cover: cover; border-radius: 6px; border: 1px solid #d1d5db;' alt='' />
+                                        <div>
+                                            <div style='font-weight: 600; color: #1f2937;'>{$item->product_title}</div>
+                                            <div style='font-size: 12px; color: #6b7280;'>ID товара: {$item->product_id}</div>
+                                        </div>
+                                    </div>
+                                    <div style='font-weight: 700; color: #111827;'>
+                                        €" . number_format($item->price, 2, '.', ' ') . "
+                                    </div>
+                                </div>";
+                                }
+
+                                $html .= '</div>';
+                                return new HtmlString($html);
+                            }),
+
+                        // Поле изменения статуса прямо в этой же модалке
+                        Select::make('status')
+                            ->label('Статус заказа')
+                            ->options([
+                                'new' => 'Новый',
+                                'processing' => 'В обработке',
+                                'completed' => 'Завершен',
+                                'cancelled' => 'Отменен',
+                            ])
+                            ->default($record->status)
+                            ->required(),
+
+                        // Показываем адрес доставки для информации
+                        Placeholder::make('address_info')
+                            ->label('Адрес доставки:')
+                            ->content($record->delivery_address),
+                    ])
+                    // Сохраняем измененный статус при нажатии кнопки в модалке
+                    ->action(function ($record, array $data): void {
+                        $record->update([
+                            'status' => $data['status']
+                        ]);
+                    }),
             ]);
     }
 
