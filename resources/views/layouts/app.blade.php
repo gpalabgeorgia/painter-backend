@@ -55,5 +55,6 @@
 
 <script src="{{ asset('js/cart-sidebar.js') }}"></script>
 <script src="{{ asset('js/script.js') }}"></script>
+<script src="{{ asset('js/profile-modals.js') }}"></script>
 </body>
 </html>
