@@ -18,9 +18,7 @@
                     @if($energy->text_2)
                         <p>{{ $energy->text_2 }}</p>
                     @endif
-
-                    {{-- Кнопка Read More (пока статика, как ты и просил) --}}
-                    <a href="#" class="read-more-btn">READ MORE &rarr;</a>
+                    <a href="{{ url('/about') }}" class="read-more-btn">READ MORE &rarr;</a>
                 </div>
             </div>
 

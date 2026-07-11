@@ -20,7 +20,7 @@ class ShopController extends Controller
         // Берем только те картины, у которых стоит галочка "Отображать в магазине"
         $products = Product::where('is_active', true)
             ->latest() // Свежие картины будут первыми в списке
-            ->get();
+            ->paginate(8);
         $footerMenus = NavigationItem::all();
         $contactData = HeaderContact::first();
         $logos = LogoSetting::first();
