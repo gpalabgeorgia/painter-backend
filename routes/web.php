@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Front\ShopController;
+use App\Http\Controllers\Front\LanguageController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SearchController;
 use App\Models\ExhibitionHeader;
@@ -120,3 +121,4 @@ Route::middleware('auth:customer')->group(function () {
     Route::post('/account/messages/{id}/reply', [AuthController::class, 'reply'])->name('profile.notifications.reply');
     Route::delete('/account/messages/{id}', [AuthController::class, 'destroy'])->name('profile.notifications.destroy');
 });
+    Route::get('lang/{locale}', [LanguageController::class, 'switch'])->name('lang.switch');;

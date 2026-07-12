@@ -170,6 +170,29 @@
                     </a>
                 @endauth
 
+                {{-- ВЫПАДАЮЩИЙ СПИСОК ЯЗЫКОВ --}}
+                <div class="lang-dropdown-wrapper" style="position: relative; display: inline-block;">
+                    <button type="button" id="langMenuTriggerBtn" class="action-btn" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 0; color: currentColor;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                        </svg>
+                        <span style="font-size: 12px; font-weight: bold; text-transform: uppercase;">{{ session('locale', 'es') }}</span>
+                    </button>
+
+                    <div id="langDropdownMenu" style="display: none; position: absolute; right: 0; top: calc(100% + 17px); background: #fff; min-width: 140px; box-shadow: 0px 8px 20px rgba(0,0,0,0.15); border: 1px solid #eee; border-radius: 4px; z-index: 1000; overflow: hidden;">
+                        @foreach(\App\Models\Language::where('is_active', true)->get() as $lang)
+                            <a href="{{ route('lang.switch', $lang->code) }}"
+                               style="color: #333; padding: 10px 14px; text-decoration: none; display: block; font-size: 13px; transition: background 0.15s; {{ session('locale', 'es') == $lang->code ? 'background: #f5f5f5; font-weight: bold; color: #e67e22;' : '' }}"
+                               onmouseover="this.style.background='#f9f9f9'"
+                               onmouseout="this.style.background='{{ session('locale', 'es') == $lang->code ? '#f5f5f5' : 'none' }}'">
+                                {{ $lang->name }} ({{ strtoupper($lang->code) }})
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -179,7 +202,7 @@
                     <li>
                         <a href="{{ $item->url }}"
                            class="menu-item {{ request()->is(trim($item->url, '/')) ? 'active' : '' }}">
-                            {{ $item->label }}
+                            {{ \App\Http\Controllers\Front\LanguageController::trans($item->label) }}
                         </a>
                     </li>
                 @endforeach
@@ -188,7 +211,7 @@
     </div>
 </header>
 
-{{-- СКРИПТ АНИМАЦИИ ДЛЯ ВЫЕЗЖАЮЩЕГО ПОЛЯ ПОИСКА И ВЫПАДАЮЩЕГО МЕНЮ --}}
+{{-- СКРИПТ АНИМАЦИИ ДЛЯ ВЫЕЗЖАЮЩЕГО ПОЛЯ ПОИСКА И ВЫПАДАЮЩИХ МЕНЮ --}}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Поиск
@@ -224,10 +247,31 @@
         if (userMenuTriggerBtn && userDropdownMenu) {
             userMenuTriggerBtn.addEventListener('click', function (e) {
                 e.stopPropagation();
+                // Закрываем меню языков, если открыто
+                if (langDropdownMenu) langDropdownMenu.style.display = 'none';
+
                 if (userDropdownMenu.style.display === 'none' || userDropdownMenu.style.display === '') {
                     userDropdownMenu.style.display = 'block';
                 } else {
                     userDropdownMenu.style.display = 'none';
+                }
+            });
+        }
+
+        // Выпадающее меню языков
+        const langMenuTriggerBtn = document.getElementById('langMenuTriggerBtn');
+        const langDropdownMenu = document.getElementById('langDropdownMenu');
+
+        if (langMenuTriggerBtn && langDropdownMenu) {
+            langMenuTriggerBtn.addEventListener('click', function (e) {
+                e.stopPropagation();
+                // Закрываем меню юзера, если открыто
+                if (userDropdownMenu) userDropdownMenu.style.display = 'none';
+
+                if (langDropdownMenu.style.display === 'none' || langDropdownMenu.style.display === '') {
+                    langDropdownMenu.style.display = 'block';
+                } else {
+                    langDropdownMenu.style.display = 'none';
                 }
             });
         }
@@ -244,6 +288,10 @@
             // Закрытие меню пользователя
             if (userDropdownMenu && userMenuTriggerBtn && !userDropdownMenu.contains(e.target) && !userMenuTriggerBtn.contains(e.target)) {
                 userDropdownMenu.style.display = 'none';
+            }
+            // Закрытие меню языков
+            if (langDropdownMenu && langMenuTriggerBtn && !langDropdownMenu.contains(e.target) && !langMenuTriggerBtn.contains(e.target)) {
+                langDropdownMenu.style.display = 'none';
             }
         });
     });
