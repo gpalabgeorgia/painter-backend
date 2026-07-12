@@ -5,15 +5,12 @@
    ========================================================================== */ -->
     @if($currentExhibition)
         <section class="exhibitions-banner-section">
-
             <div class="exhibitions-top-header">
                 <h2 class="exhibitions-title-text">{{ $currentExhibition->page_title ?? 'Exhibitions' }}</h2>
                 <div class="exhibitions-red-line"></div>
             </div>
-
             <div class="exhibition-dark-inner-banner" style="background-image: url('{{ asset('storage/' . $currentExhibition->bg_image) }}');">
                 <div class="exhibition-banner-content">
-
                     <div class="exh-left-meta">
                         <span class="exh-badge">{{ $currentExhibition->subtitle ?? 'CURRENT EXHIBITION' }}</span>
                         <h3 class="exh-main-title">{!! nl2br(e($currentExhibition->title)) !!}</h3>
@@ -22,20 +19,15 @@
                     {{ \Carbon\Carbon::parse($currentExhibition->end_date)->format('M d') }}
                 </span>
                     </div>
-
                     <div class="exh-right-details">
                         <p class="exh-description">
                             {{ $currentExhibition->description }}
                         </p>
-                        <a href="#" class="exh-read-more">READ MORE &rarr;</a>
                     </div>
-
                 </div>
             </div>
-
         </section>
     @endif
-
     @if($upcomingExhibitions->isNotEmpty())
         <section class="upcoming-exhibitions-section" style="background-image: url('{{ asset('img/exhibitions-gradient-line-bg.svg') }}');">
             <div class="upcoming-container">
@@ -61,12 +53,9 @@
                             {{ $upcoming->date_range }}
                         </span>
                                 <h4 class="card-title">{{ $upcoming->title }}</h4>
-
                                 <p class="card-desc">
                                     {{ $upcoming->description }}
                                 </p>
-
-                                <a href="{{ $upcoming->link ?? '#' }}" class="card-link">READ MORE &rarr;</a>
                             </div>
                         </div>
                     @endforeach
@@ -77,12 +66,10 @@
     <!-- СЕКЦИЯ ПРОШЕДШИХ ВЫСТАВОК (PAST EXHIBITIONS) -->
     <section class="past-exhibitions-section">
         <div class="past-container">
-
             <div class="past-header">
                 <h2 class="past-section-title">
                     {!! nl2br(e($pastHeader->section_title ?? 'Past Exhibitions')) !!}
                 </h2>
-
                 <div class="past-header-right">
                     <div class="past-red-line"></div>
                     <p class="past-section-subtitle">
@@ -90,7 +77,6 @@
                     </p>
                 </div>
             </div>
-
             <div class="past-grid">
                 @foreach($pastExhibitions as $past)
                     <div class="past-card">
@@ -102,9 +88,7 @@
                     </div>
                 @endforeach
             </div>
-
         </div>
     </section>
-
     @include('sections.subscribe')
 @endsection

@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\HeaderContact;
+use App\Models\LogoSetting;
+use App\Models\NavigationItem;
 use Illuminate\Http\Request;
 use App\Models\SearchSetting;
 
@@ -13,6 +16,9 @@ class SearchController extends Controller
 
         // Ищем настройки поиска в базе данных
         $settings = SearchSetting::first();
+        $footerMenus = NavigationItem::all();
+        $contactData = HeaderContact::first();
+        $logos = LogoSetting::first();
 
         // Если запись в базе еще не создана, подставляем дефолтные тексты
         if (!$settings) {
@@ -42,6 +48,6 @@ class SearchController extends Controller
             'query' => $query,
             'results' => $results,
             'settings' => $settings
-        ]);
+        ], compact('footerMenus', 'contactData', 'logos'));
     }
 }

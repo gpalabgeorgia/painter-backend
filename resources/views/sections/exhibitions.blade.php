@@ -21,7 +21,6 @@
                             <span class="card-date">{{ $exhibition->date_range }}</span>
                             <h3 class="card-title">{{ $exhibition->title }}</h3>
                             <p class="card-text">{{ $exhibition->description }}</p>
-                            <a href="{{ $exhibition->link ?? '#' }}" class="card-link">READ MORE &rarr;</a>
                         </div>
                     </div>
                 @endforeach
