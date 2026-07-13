@@ -19,7 +19,6 @@ class TranslationResource extends Resource
 
     public static function form(Form $form): Form
     {
-        // 1. Получаем все активные языки
         $languages = Language::where('is_active', true)->get();
 
         if ($languages->isEmpty()) {
@@ -30,10 +29,9 @@ class TranslationResource extends Resource
             ]);
         }
 
-        $mainLang = $languages->first(); // Главный язык (Испанский)
-        $otherLanguages = $languages->skip(1); // Все остальные языки, на которые нужно переводить (EN, RU...)
+        $mainLang = $languages->first();
+        $otherLanguages = $languages->skip(1);
 
-        // Первое поле — это и есть текст на испанском, он же ключ для базы
         $schema = [
             Forms\Components\TextInput::make('key')
                 ->label("Текст на основном языке ({$mainLang->name})")
@@ -43,12 +41,10 @@ class TranslationResource extends Resource
                 ->columnSpan(2),
         ];
 
-        // Генерируем поля ТОЛЬКО для переводов на другие языки
         foreach ($otherLanguages as $lang) {
             $schema[] = Forms\Components\TextInput::make("lang_{$lang->code}")
                 ->label("Перевод на язык: {$lang->name} ({$lang->code})")
                 ->placeholder('Введите перевод...')
-                ->required()
                 ->afterStateHydrated(function ($component, $state, $record) use ($lang) {
                     if ($record) {
                         $translation = Translation::where('key', $record->key)
@@ -73,9 +69,19 @@ class TranslationResource extends Resource
             ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                // Кнопка удаления: перед удалением строки она стирает этот ключ для ВСЕХ языков
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (Translation $record) {
+                        Translation::where('key', $record->key)->delete();
+                    }),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                // Массовое удаление чекбоксами тоже очистит все связанные ключи
+                Tables\Actions\DeleteBulkAction::make()
+                    ->before(function (\Illuminate\Database\Eloquent\Collection $records) {
+                        $keys = $records->pluck('key')->unique()->toArray();
+                        Translation::whereIn('key', $keys)->delete();
+                    }),
             ]);
     }
 

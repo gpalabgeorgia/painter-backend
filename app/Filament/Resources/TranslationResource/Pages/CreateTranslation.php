@@ -4,6 +4,7 @@ namespace App\Filament\Resources\TranslationResource\Pages;
 
 use App\Filament\Resources\TranslationResource;
 use App\Models\Translation;
+use App\Models\Language;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateTranslation extends CreateRecord
@@ -13,26 +14,33 @@ class CreateTranslation extends CreateRecord
     protected function handleRecordCreation(array $data): \Illuminate\Database\Eloquent\Model
     {
         $key = $data['key'];
-        $firstRecord = null;
+        $languages = Language::where('is_active', true)->get();
+        $mainRecord = null;
 
-        // Перебираем все поля формы
-        foreach ($data as $inputName => $value) {
-            if (str_starts_with($inputName, 'lang_')) {
-                $langCode = str_replace('lang_', '', $inputName);
+        foreach ($languages as $index => $lang) {
+            // Для главного языка значением является сам ключ (или можно оставить пустым, если логика другая)
+            if ($index === 0) {
+                $value = $key;
+                $langCode = $lang->code;
+            } else {
+                $value = $data["lang_{$lang->code}"] ?? null;
+                $langCode = $lang->code;
+            }
 
-                // Создаем строку для каждого языка
-                $record = Translation::create([
-                    'key' => $key,
-                    'lang_code' => $langCode,
-                    'value' => $value,
-                ]);
+            if ($value !== null && $value !== '') {
+                // Используем updateOrCreate, чтобы если ключ уже частично есть в базе (для en/ru),
+                // для нового языка (ge) он просто добавился без ошибок уникальности!
+                $record = Translation::updateOrCreate(
+                    ['key' => $key, 'lang_code' => $langCode],
+                    ['value' => $value]
+                );
 
-                if (!$firstRecord) {
-                    $firstRecord = $record; // Filament нужен один корневой объект для возврата
+                if (!$mainRecord) {
+                    $mainRecord = $record;
                 }
             }
         }
 
-        return $firstRecord;
+        return $mainRecord ?? new Translation();
     }
 }
