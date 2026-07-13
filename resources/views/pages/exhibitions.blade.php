@@ -81,8 +81,12 @@
                         <div class="past-img-box">
                             <img src="{{ asset($past->image) }}" alt="{{ $past->title }}" class="past-img">
                         </div>
-                        <h4 class="past-card-title">{{ $past->getAttribute('title') }}</h4>
-                        <p class="past-card-desc">{{ $past->getAttribute('description') }}</p>
+                        <h4 class="past-card-title">
+                            {{ $past->contentTranslations->where('lang_code', app()->getLocale())->firstWhere('field', 'title')?->value ?? $past->title }}
+                        </h4>
+                        <p class="past-card-desc">
+                            {{ $past->contentTranslations->where('lang_code', app()->getLocale())->firstWhere('field', 'description')?->value ?? $past->description }}
+                        </p>
                     </div>
                 @endforeach
             </div>

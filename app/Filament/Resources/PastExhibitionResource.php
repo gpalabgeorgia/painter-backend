@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PastExhibitionResource\Pages;
 use App\Models\PastExhibition;
+use App\Models\Language;
 use Filament\Forms;
 use Filament\Resources\Form;
 use Filament\Resources\Resource;
@@ -16,29 +17,44 @@ class PastExhibitionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-collection';
     protected static ?string $navigationGroup = 'ВЫСТАВКИ';
-
     protected static ?string $navigationLabel = '3. Прошедшие выставки';
     protected static ?string $pluralModelLabel = 'Прошедшие выставки';
     protected static ?string $modelLabel = 'выставку';
 
     public static function form(Form $form): Form
     {
+        // Динамически получаем все активные языки (кроме испанского оригинала)
+        $languages = Language::where('code', '!=', 'es')->where('is_active', true)->get();
+
+        $translationTabs = [];
+        foreach ($languages as $lang) {
+            $translationTabs[] = Forms\Components\Tabs\Tab::make($lang->name)
+                ->schema([
+                    Forms\Components\TextInput::make("translations.{$lang->code}.title")
+                        ->label('Название картины / выставки'),
+
+                    Forms\Components\Textarea::make("translations.{$lang->code}.description")
+                        ->label('Маленькое описание под названием')
+                        ->rows(3),
+                ]);
+        }
+
         return $form
             ->schema([
                 Forms\Components\Card::make()->schema([
                     Forms\Components\TextInput::make('title')
-                        ->label('Название картины / выставки')
+                        ->label('Название картины / выставки (Испанский)')
                         ->required(),
 
                     Forms\Components\Textarea::make('description')
-                        ->label('Маленькое описание под названием')
+                        ->label('Маленькое описание под названием (Испанский)')
                         ->rows(3)
                         ->required(),
 
                     Forms\Components\FileUpload::make('image')
                         ->label('Фотография картины')
-                        ->disk('root') // Используем твой рабочий диск root
-                        ->directory('img/past-exhibitions') // Сохраняем строго внутрь папки public/img/
+                        ->disk('root')
+                        ->directory('img/past-exhibitions')
                         ->image()
                         ->required(),
 
@@ -52,6 +68,12 @@ class PastExhibitionResource extends Resource
                             ->label('Активно')
                             ->default(true),
                     ]),
+
+                    // Табы перевода
+                    Forms\Components\Tabs::make('Переводы')
+                        ->tabs($translationTabs)
+                        ->columnSpan('full')
+                        ->hidden(empty($translationTabs)),
                 ])
             ]);
     }
@@ -60,39 +82,28 @@ class PastExhibitionResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('image')
-                    ->label('Фото')
-                    ->disk('root'),
-
-                Tables\Columns\TextColumn::make('title')
-                    ->label('Название')
-                    ->searchable(),
-
-                Tables\Columns\TextColumn::make('sort_order')
-                    ->label('Порядок')
-                    ->sortable(),
-
-                Tables\Columns\BooleanColumn::make('is_active')
-                    ->label('Активно'),
+                Tables\Columns\ImageColumn::make('image')->label('Фото')->disk('root'),
+                Tables\Columns\TextColumn::make('title')->label('Название')->searchable(),
+                Tables\Columns\TextColumn::make('sort_order')->label('Порядок')->sortable(),
+                Tables\Columns\BooleanColumn::make('is_active')->label('Активно'),
             ])
             ->defaultSort('sort_order', 'asc')
-            ->filters([
-                //
-            ])
+            ->filters([])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                Tables\Actions\DeleteAction::make()
+                    ->before(function (PastExhibition $record) {
+                        $record->contentTranslations()->delete();
+                    }),
             ])
             ->bulkActions([
-                Tables\Actions\DeleteBulkAction::make(),
+                Tables\Actions\DeleteBulkAction::make()
+                    ->before(function (\Illuminate\Database\Eloquent\Collection $records) {
+                        foreach ($records as $record) {
+                            $record->contentTranslations()->delete();
+                        }
+                    }),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
     }
 
     public static function getPages(): array
