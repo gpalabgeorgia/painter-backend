@@ -6,14 +6,14 @@
     @if($currentExhibition)
         <section class="exhibitions-banner-section">
             <div class="exhibitions-top-header">
-                <h2 class="exhibitions-title-text">{{ $currentExhibition->page_title ?? 'Exhibitions' }}</h2>
+                <h2 class="exhibitions-title-text">{{ $currentExhibition->getAttribute('page_title') ?? 'Exhibitions' }}</h2>
                 <div class="exhibitions-red-line"></div>
             </div>
             <div class="exhibition-dark-inner-banner" style="background-image: url('{{ asset('storage/' . $currentExhibition->bg_image) }}');">
                 <div class="exhibition-banner-content">
                     <div class="exh-left-meta">
-                        <span class="exh-badge">{{ $currentExhibition->subtitle ?? 'CURRENT EXHIBITION' }}</span>
-                        <h3 class="exh-main-title">{!! nl2br(e($currentExhibition->title)) !!}</h3>
+                        <span class="exh-badge">{{ $currentExhibition->getAttribute('subtitle') ?? 'CURRENT EXHIBITION' }}</span>
+                        <h3 class="exh-main-title">{!! nl2br(e($currentExhibition->getAttribute('title'))) !!}</h3>
                         <span class="exh-date-range">
                     {{ \Carbon\Carbon::parse($currentExhibition->start_date)->format('M d') }} -
                     {{ \Carbon\Carbon::parse($currentExhibition->end_date)->format('M d') }}
@@ -21,7 +21,7 @@
                     </div>
                     <div class="exh-right-details">
                         <p class="exh-description">
-                            {{ $currentExhibition->description }}
+                            {{ $currentExhibition->getAttribute('description') }}
                         </p>
                     </div>
                 </div>
@@ -34,27 +34,25 @@
                 <div class="upcoming-header">
                     {{-- Глобальные заголовок и подзаголовок секции --}}
                     <h2 class="upcoming-section-title">
-                        {{ $upcomingExhibitions->first()->title ?? 'Upcoming Exhibitions' }}
+                        {{ $upcomingExhibitions->first()->getAttribute('title') ?? 'Upcoming Exhibitions' }}
                     </h2>
                     <p class="upcoming-section-subtitle">
-                        {!! nl2br(e($upcomingExhibitions->first()->description ?? 'Tempor ac tincidunt feugiat dignissim quis sed donec cursus ornare varius sed sagittis nibh.')) !!}
+                        {!! nl2br(e($upcomingExhibitions->first()->getAttribute('description') ?? 'Tempor ac tincidunt feugiat dignissim quis sed donec cursus ornare varius sed sagittis nibh.')) !!}
                     </p>
                 </div>
                 <div class="upcoming-grid">
                     @foreach($upcomingExhibitions as $upcoming)
                         <div class="upcoming-card">
                             <div class="card-img-wrapper">
-                                {{-- Отрезаем 'public/' от пути из базы, чтобы картинка стопроцентно открылась --}}
                                 <img src="{{ asset(\Illuminate\Support\Str::after($upcoming->image, 'public/')) }}" alt="{{ $upcoming->title }}" class="card-img">
                             </div>
                             <div class="card-content">
-                                {{-- ВЫВОДИМ ИСПРАВЛЕННУЮ ДАТУ НАПРЯМУЮ ИЗ ТВОЕЙ КОЛОНКИ --}}
                                 <span class="card-date">
                             {{ $upcoming->date_range }}
                         </span>
-                                <h4 class="card-title">{{ $upcoming->title }}</h4>
+                                <h4 class="card-title">{{ $upcoming->getAttribute('title') }}</h4>
                                 <p class="card-desc">
-                                    {{ $upcoming->description }}
+                                    {{ $upcoming->getAttribute('description') }}
                                 </p>
                             </div>
                         </div>
@@ -67,13 +65,13 @@
     <section class="past-exhibitions-section">
         <div class="past-container">
             <div class="past-header">
-                <h2 class="past-section-title">
-                    {!! nl2br(e($pastHeader->section_title ?? 'Past Exhibitions')) !!}
+                <h2 class="past-section-title" style="max-width: 40%; line-height: 1.2;">
+                    {{ $pastHeader->contentTranslations->where('lang_code', app()->getLocale())->firstWhere('field', 'section_title')?->value ?? $pastHeader->section_title ?? 'Past Exhibitions' }}
                 </h2>
                 <div class="past-header-right">
                     <div class="past-red-line"></div>
                     <p class="past-section-subtitle">
-                        {{ $pastHeader->section_description ?? 'Tempor ac tincidunt feugiat dignissim quis sed donec cursus ornare varius sed sagittis nibh.' }}
+                        {{ $pastHeader->contentTranslations->where('lang_code', app()->getLocale())->firstWhere('field', 'section_description')?->value ?? $pastHeader->section_description ?? 'Tempor ac tincidunt feugiat dignissim quis sed donec cursus ornare varius sed sagittis nibh.' }}
                     </p>
                 </div>
             </div>
@@ -83,8 +81,8 @@
                         <div class="past-img-box">
                             <img src="{{ asset($past->image) }}" alt="{{ $past->title }}" class="past-img">
                         </div>
-                        <h4 class="past-card-title">{{ $past->title }}</h4>
-                        <p class="past-card-desc">{{ $past->description }}</p>
+                        <h4 class="past-card-title">{{ $past->getAttribute('title') }}</h4>
+                        <p class="past-card-desc">{{ $past->getAttribute('description') }}</p>
                     </div>
                 @endforeach
             </div>
