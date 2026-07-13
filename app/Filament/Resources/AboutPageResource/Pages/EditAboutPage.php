@@ -4,31 +4,51 @@ namespace App\Filament\Resources\AboutPageResource\Pages;
 
 use App\Filament\Resources\AboutPageResource;
 use Filament\Resources\Pages\EditRecord;
-use App\Models\AboutPage;
 
 class EditAboutPage extends EditRecord
 {
     protected static string $resource = AboutPageResource::class;
 
-    // Этот метод проверяет наличие записи при загрузке страницы
+    // Фикс ошибки роута: Если ID записи не передан в URL, принудительно открываем запись с ID 1
     public function mount($record = null): void
     {
-        // Находим или автоматически создаем запись с ID = 1, если в базе пусто
-        $page = AboutPage::firstOrCreate(
-            ['id' => 1],
-            [
-                's1_title' => 'About',
-                's3_title' => 'Awards'
-            ]
-        );
+        if ($record === null) {
+            $record = 1;
+        }
 
-        // Передаем ID записи в Filament для открытия формы редактирования
-        parent::mount($page->id);
+        parent::mount($record);
     }
 
-    protected function getRedirectUrl(): string
+    // Перед заполнением формы: берем переводы из модели и пушим их во вложенные табы Filament
+    protected function mutateFormDataBeforeFill(array $data): array
     {
-        // После сохранения оставляем админа на этой же странице редактирования
-        return $this->getResource()::getUrl('index');
+        $data['translations'] = $this->record->translations;
+        return $data;
+    }
+
+    // После сохранения страницы: берем переводы из формы и пишем напрямую в базу
+    protected function afterSave(): void
+    {
+        // Безопасно получаем чистые данные формы Filament v2
+        $data = $this->form->getRawState();
+        $translations = $data['translations'] ?? [];
+
+        foreach ($translations as $locale => $fields) {
+            if (!is_array($fields)) continue;
+
+            foreach ($fields as $field => $value) {
+                if ($value !== null && $value !== '') {
+                    $this->record->contentTranslations()->updateOrCreate(
+                        ['lang_code' => $locale, 'field' => $field],
+                        ['value' => $value]
+                    );
+                } else {
+                    $this->record->contentTranslations()
+                        ->where('lang_code', $locale)
+                        ->where('field', $field)
+                        ->delete();
+                }
+            }
+        }
     }
 }
